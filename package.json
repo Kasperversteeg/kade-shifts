@@ -1,0 +1,27 @@
+{
+    "$schema": "https://www.schemastore.org/package.json",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite"
+    },
+    "devDependencies": {
+        "@inertiajs/vue3": "^2.0.0",
+        "@tailwindcss/forms": "^0.5.3",
+        "@tailwindcss/vite": "^4.0.0",
+        "@vite-pwa/assets-generator": "^1.0.2",
+        "@vitejs/plugin-vue": "^6.0.0",
+        "axios": "^1.11.0",
+        "concurrently": "^9.0.1",
+        "daisyui": "^5.5.14",
+        "laravel-vite-plugin": "^2.0.0",
+        "tailwindcss": "^4.1.18",
+        "vite": "^7.0.7",
+        "vite-plugin-pwa": "^1.2.0",
+        "vue": "^3.4.0"
+    },
+    "dependencies": {
+        "dayjs": "^1.11.19"
+    }
+}
