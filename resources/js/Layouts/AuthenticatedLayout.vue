@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
+import ThemeToggle from '@/Components/ThemeToggle.vue';
 
 const showingNavigationDropdown = ref(false);
 
@@ -21,9 +22,9 @@ const isAdmin = computed(() => user.value?.role === 'admin');
                         </svg>
                     </div>
                     <ul v-if="showingNavigationDropdown" tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                        <li><Link :href="route('dashboard')">Dashboard</Link></li>
-                        <li><Link :href="route('time-entries.index')">My Hours</Link></li>
-                        <li v-if="isAdmin"><Link :href="route('admin.overview')">Admin</Link></li>
+                        <li><Link :href="route('dashboard')">{{ $t('nav.dashboard') }}</Link></li>
+                        <li><Link :href="route('time-entries.index')">{{ $t('nav.myHours') }}</Link></li>
+                        <li v-if="isAdmin"><Link :href="route('admin.overview')">{{ $t('nav.admin') }}</Link></li>
                     </ul>
                 </div>
                 <Link :href="route('dashboard')" class="btn btn-ghost text-xl">
@@ -34,22 +35,23 @@ const isAdmin = computed(() => user.value?.role === 'admin');
                 <ul class="menu menu-horizontal px-1">
                     <li>
                         <Link :href="route('dashboard')" :class="{ 'active': route().current('dashboard') }">
-                            Dashboard
+                            {{ $t('nav.dashboard') }}
                         </Link>
                     </li>
                     <li>
                         <Link :href="route('time-entries.index')" :class="{ 'active': route().current('time-entries.*') }">
-                            My Hours
+                            {{ $t('nav.myHours') }}
                         </Link>
                     </li>
                     <li v-if="isAdmin">
                         <Link :href="route('admin.overview')" :class="{ 'active': route().current('admin.*') }">
-                            Admin
+                            {{ $t('nav.admin') }}
                         </Link>
                     </li>
                 </ul>
             </div>
-            <div class="navbar-end">
+            <div class="navbar-end gap-1">
+                <ThemeToggle />
                 <div class="dropdown dropdown-end">
                     <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar placeholder">
                         <div class="bg-primary text-primary-content w-10 rounded-full">
@@ -58,8 +60,9 @@ const isAdmin = computed(() => user.value?.role === 'admin');
                     </div>
                     <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                         <li class="menu-title">{{ user.name }}</li>
-                        <li><Link :href="route('profile.edit')">Profile</Link></li>
-                        <li><Link :href="route('logout')" method="post" as="button">Log Out</Link></li>
+                        <li><Link :href="route('profile.edit')">{{ $t('nav.profile') }}</Link></li>
+                        <li><Link :href="route('preferences.edit')">{{ $t('nav.preferences') }}</Link></li>
+                        <li><Link :href="route('logout')" method="post" as="button">{{ $t('nav.logOut') }}</Link></li>
                     </ul>
                 </div>
             </div>

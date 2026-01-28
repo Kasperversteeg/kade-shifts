@@ -1,6 +1,7 @@
 # Hour Registration App - Project Plan
 
 ## Tech Stack
+
 - **Backend**: Laravel 11
 - **Frontend**: Vue 3 (Composition API) + Inertia.js
 - **Styling**: Tailwind CSS + DaisyUI
@@ -15,6 +16,7 @@
 ## 📋 Database Schema
 
 ### Users Table
+
 ```sql
 - id (primary key)
 - name (string)
@@ -28,6 +30,7 @@
 ```
 
 ### Time Entries Table
+
 ```sql
 - id (primary key)
 - user_id (foreign key -> users.id)
@@ -47,6 +50,7 @@ Indexes:
 ```
 
 ### Invitations Table (for user invites)
+
 ```sql
 - id (primary key)
 - email (string)
@@ -124,1626 +128,399 @@ hour-registration/
 
 ## 🚀 Implementation Plan
 
-### Phase 1: Project Setup (1-2 hours)
-
-#### Step 1.1: Install Laravel + DDEV
-```bash
-# Laravel project already created, configure DDEV
-ddev config --project-type=laravel --docroot=public
-ddev start
-```
-
-#### Step 1.2: Install Dependencies
-```bash
-# Install Laravel Breeze with Vue/Inertia
-ddev composer require laravel/breeze --dev
-ddev artisan breeze:install vue
-
-# Install Tailwind plugins
-ddev ddev npm install -D daisyui@latest
-ddev ddev npm install @vite-pwa/assets-generator -D
-ddev ddev npm install vite-plugin-pwa -D
-
-# Install date handling
-ddev ddev npm install dayjs
-```
-
-#### Step 1.3: Configure Database
-DDEV auto-configures the database connection. Verify `.env` has:
-```env
-DB_CONNECTION=mysql
-DB_HOST=db
-DB_PORT=3306
-DB_DATABASE=db
-DB_USERNAME=db
-DB_PASSWORD=db
-```
-
-#### Step 1.4: Configure Tailwind + DaisyUI
-Update `tailwind.config.js`:
-```javascript
-export default {
-  content: [
-    './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
-    './storage/framework/views/*.blade.php',
-    './resources/views/**/*.blade.php',
-    './resources/js/**/*.vue',
-  ],
-  theme: {
-    extend: {},
-  },
-  plugins: [require('daisyui')],
-  daisyui: {
-    themes: ["light", "dark"],
-  },
-}
-```
+### Phase 2 — Core Enhancements (Step-by-Step)
 
 ---
 
-### Phase 2: Database Setup (1 hour)
+#### 2.1 Edit/Delete Time Entries
 
-#### Step 2.1: Create Migrations
-```bash
-ddev artisan make:migration add_role_to_users_table
-ddev artisan make:migration create_time_entries_table
-ddev artisan make:migration create_invitations_table
-```
+The backend (`TimeEntryController@update` and `@destroy`) already exists. This is purely frontend work.
 
-#### Migration: add_role_to_users_table
-```php
-public function up()
-{
-    Schema::table('users', function (Blueprint $table) {
-        $table->enum('role', ['user', 'admin'])->default('user')->after('email');
-    });
-}
-```
+**Step 1 — Create `EditTimeEntryModal.vue` component**
 
-#### Migration: create_time_entries_table
-```php
-public function up()
-{
-    Schema::create('time_entries', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('user_id')->constrained()->onDelete('cascade');
-        $table->date('date');
-        $table->time('shift_start');
-        $table->time('shift_end');
-        $table->integer('break_minutes')->default(0);
-        $table->decimal('total_hours', 5, 2);
-        $table->text('notes')->nullable();
-        $table->timestamps();
-        
-        $table->index(['user_id', 'date']);
-    });
-}
-```
+- File: `resources/js/Components/EditTimeEntryModal.vue`
+- DaisyUI modal (`<dialog>`) that receives a `timeEntry` prop
+- Reuse the same fields as `TimeEntryForm.vue`: date, shift_start, shift_end, break_minutes, notes
+- Use `useForm()` from `@inertiajs/vue3` pre-filled with the entry's current values
+- Submit via `form.patch(route('time-entries.update', entry.id))`
+- Emit `close` event on success or cancel
 
-#### Migration: create_invitations_table
-```php
-public function up()
-{
-    Schema::create('invitations', function (Blueprint $table) {
-        $table->id();
-        $table->string('email');
-        $table->string('token')->unique();
-        $table->foreignId('invited_by')->constrained('users')->onDelete('cascade');
-        $table->timestamp('expires_at');
-        $table->timestamp('accepted_at')->nullable();
-        $table->timestamps();
-    });
-}
-```
+**Step 2 — Create `ConfirmDeleteModal.vue` component**
 
-#### Step 2.2: Run Migrations
-```bash
-ddev artisan migrate
-```
+- File: `resources/js/Components/ConfirmDeleteModal.vue`
+- Generic confirmation modal: receives `title`, `message` props, emits `confirm` / `cancel`
+- DaisyUI modal with danger-styled confirm button
 
-#### Step 2.3: Create Seeder for Admin User
-```bash
-ddev artisan make:seeder AdminUserSeeder
-```
+**Step 3 — Add edit/delete buttons to `TimeEntryCard.vue`**
 
-```php
-public function run()
-{
-    User::create([
-        'name' => 'Admin User',
-        'email' => 'admin@example.com',
-        'password' => Hash::make('password'),
-        'role' => 'admin',
-        'email_verified_at' => now(),
-    ]);
-}
-```
+- Add an "Edit" icon button and a "Delete" icon button to each card
+- Edit button opens `EditTimeEntryModal` with the entry data
+- Delete button opens `ConfirmDeleteModal`
+- On delete confirm: `router.delete(route('time-entries.destroy', entry.id))`
 
-```bash
-ddev artisan db:seed --class=AdminUserSeeder
-```
+**Step 4 — Wire modals into `TimeEntries/Index.vue` and `Dashboard.vue`**
+
+- Import and mount both modals in each page
+- Track `editingEntry` and `deletingEntry` refs to control which modals are open
+- Pass the reactive entry to the modal components
+
+**Step 5 — Test**
+
+- `ddev artisan test --filter=TimeEntry`
+- Manual test: edit an entry, verify values update; delete an entry, verify it disappears
 
 ---
 
-### Phase 3: Models & Business Logic (2 hours)
+#### 2.2 One Entry Per Day Constraint
 
-#### Step 3.1: Update User Model
-```php
-// app/Models/User.php
-protected $fillable = ['name', 'email', 'password', 'role'];
+**Step 1 — Migration**
 
-public function isAdmin(): bool
-{
-    return $this->role === 'admin';
-}
+- `ddev artisan make:migration add_unique_user_date_to_time_entries_table`
+- In `up()`: `$table->unique(['user_id', 'date'])`
+- In `down()`: `$table->dropUnique(['user_id', 'date'])`
 
-public function timeEntries()
-{
-    return $this->hasMany(TimeEntry::class);
-}
+**Step 2 — Update `StoreTimeEntryRequest.php`**
 
-public function invitations()
-{
-    return $this->hasMany(Invitation::class, 'invited_by');
-}
-```
-
-#### Step 3.2: Create TimeEntry Model
-```bash
-ddev artisan make:model TimeEntry
-```
-
-```php
-// app/Models/TimeEntry.php
-namespace App\Models;
-
-use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
-
-class TimeEntry extends Model
-{
-    protected $fillable = [
-        'user_id',
-        'date',
-        'shift_start',
-        'shift_end',
-        'break_minutes',
-        'total_hours',
-        'notes',
-    ];
-
-    protected $casts = [
-        'date' => 'date',
-        'shift_start' => 'datetime:H:i',
-        'shift_end' => 'datetime:H:i',
-        'break_minutes' => 'integer',
-        'total_hours' => 'decimal:2',
-    ];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public static function calculateTotalHours($shiftStart, $shiftEnd, $breakMinutes)
-    {
-        $start = Carbon::parse($shiftStart);
-        $end = Carbon::parse($shiftEnd);
-        
-        // If end time is before start time, assume it's next day
-        if ($end->lt($start)) {
-            $end->addDay();
-        }
-        
-        $totalMinutes = $end->diffInMinutes($start);
-        $workMinutes = $totalMinutes - $breakMinutes;
-        
-        return round($workMinutes / 60, 2);
-    }
-}
-```
-
-#### Step 3.3: Create Invitation Model
-```bash
-ddev artisan make:model Invitation
-```
-
-```php
-// app/Models/Invitation.php
-namespace App\Models;
-
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
-
-class Invitation extends Model
-{
-    protected $fillable = [
-        'email',
-        'token',
-        'invited_by',
-        'expires_at',
-        'accepted_at',
-    ];
-
-    protected $casts = [
-        'expires_at' => 'datetime',
-        'accepted_at' => 'datetime',
-    ];
-
-    public function inviter()
-    {
-        return $this->belongsTo(User::class, 'invited_by');
-    }
-
-    public function isExpired(): bool
-    {
-        return $this->expires_at->isPast();
-    }
-
-    public function isAccepted(): bool
-    {
-        return $this->accepted_at !== null;
-    }
-
-    public static function generateToken(): string
-    {
-        return Str::random(32);
-    }
-}
-```
-
----
-
-### Phase 4: Authentication & Middleware (1 hour)
-
-#### Step 4.1: Create Admin Middleware
-```bash
-ddev artisan make:middleware AdminMiddleware
-```
-
-```php
-// app/Http/Middleware/AdminMiddleware.php
-namespace App\Http\Middleware;
-
-use Closure;
-use Illuminate\Http\Request;
-
-class AdminMiddleware
-{
-    public function handle(Request $request, Closure $next)
-    {
-        if (!$request->user() || !$request->user()->isAdmin()) {
-            abort(403, 'Unauthorized');
-        }
-
-        return $next($request);
-    }
-}
-```
-
-#### Step 4.2: Register Middleware
-```php
-// bootstrap/app.php (Laravel 11)
-->withMiddleware(function (Middleware $middleware) {
-    $middleware->alias([
-        'admin' => \App\Http\Middleware\AdminMiddleware::class,
-    ]);
-})
-```
-
----
-
-### Phase 5: Backend Controllers (3-4 hours)
-
-#### Step 5.1: Dashboard Controller
-```bash
-ddev artisan make:controller DashboardController
-```
-
-```php
-// app/Http/Controllers/DashboardController.php
-namespace App\Http\Controllers;
-
-use App\Models\TimeEntry;
-use Carbon\Carbon;
-use Inertia\Inertia;
-
-class DashboardController extends Controller
-{
-    public function index()
-    {
-        $user = auth()->user();
-        $today = Carbon::today();
-        
-        // Get current month entries
-        $monthEntries = TimeEntry::where('user_id', $user->id)
-            ->whereYear('date', $today->year)
-            ->whereMonth('date', $today->month)
-            ->orderBy('date', 'desc')
-            ->get();
-        
-        $monthTotal = $monthEntries->sum('total_hours');
-        
-        return Inertia::render('Dashboard', [
-            'entries' => $monthEntries,
-            'monthTotal' => $monthTotal,
-            'currentMonth' => $today->format('Y-m'),
-        ]);
-    }
-}
-```
-
-#### Step 5.2: Time Entry Controller
-```bash
-ddev artisan make:controller TimeEntryController
-ddev artisan make:request StoreTimeEntryRequest
-```
-
-```php
-// app/Http/Requests/StoreTimeEntryRequest.php
-namespace App\Http\Requests;
-
-use Illuminate\Foundation\Http\FormRequest;
-
-class StoreTimeEntryRequest extends FormRequest
-{
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    public function rules(): array
-    {
-        return [
-            'date' => 'required|date',
-            'shift_start' => 'required|date_format:H:i',
-            'shift_end' => 'required|date_format:H:i',
-            'break_minutes' => 'required|integer|min:0|max:480',
-            'notes' => 'nullable|string|max:500',
-        ];
-    }
-}
-```
-
-```php
-// app/Http/Controllers/TimeEntryController.php
-namespace App\Http\Controllers;
-
-use App\Models\TimeEntry;
-use App\Http\Requests\StoreTimeEntryRequest;
-use Illuminate\Http\Request;
-use Carbon\Carbon;
-use Inertia\Inertia;
-
-class TimeEntryController extends Controller
-{
-    public function index(Request $request)
-    {
-        $month = $request->get('month', Carbon::now()->format('Y-m'));
-        $date = Carbon::parse($month . '-01');
-        
-        $entries = TimeEntry::where('user_id', auth()->id())
-            ->whereYear('date', $date->year)
-            ->whereMonth('date', $date->month)
-            ->orderBy('date', 'desc')
-            ->get();
-        
-        $monthTotal = $entries->sum('total_hours');
-        
-        return Inertia::render('TimeEntries/Index', [
-            'entries' => $entries,
-            'monthTotal' => $monthTotal,
-            'currentMonth' => $month,
-        ]);
-    }
-
-    public function store(StoreTimeEntryRequest $request)
-    {
-        $validated = $request->validated();
-        
-        $totalHours = TimeEntry::calculateTotalHours(
-            $validated['shift_start'],
-            $validated['shift_end'],
-            $validated['break_minutes']
-        );
-        
-        TimeEntry::create([
-            'user_id' => auth()->id(),
-            'date' => $validated['date'],
-            'shift_start' => $validated['shift_start'],
-            'shift_end' => $validated['shift_end'],
-            'break_minutes' => $validated['break_minutes'],
-            'total_hours' => $totalHours,
-            'notes' => $validated['notes'] ?? null,
-        ]);
-        
-        return redirect()->back()->with('success', 'Time entry added successfully!');
-    }
-
-    public function update(StoreTimeEntryRequest $request, TimeEntry $timeEntry)
-    {
-        // Ensure user can only edit their own entries
-        if ($timeEntry->user_id !== auth()->id()) {
-            abort(403);
-        }
-        
-        $validated = $request->validated();
-        
-        $totalHours = TimeEntry::calculateTotalHours(
-            $validated['shift_start'],
-            $validated['shift_end'],
-            $validated['break_minutes']
-        );
-        
-        $timeEntry->update([
-            'date' => $validated['date'],
-            'shift_start' => $validated['shift_start'],
-            'shift_end' => $validated['shift_end'],
-            'break_minutes' => $validated['break_minutes'],
-            'total_hours' => $totalHours,
-            'notes' => $validated['notes'] ?? null,
-        ]);
-        
-        return redirect()->back()->with('success', 'Time entry updated successfully!');
-    }
-
-    public function destroy(TimeEntry $timeEntry)
-    {
-        if ($timeEntry->user_id !== auth()->id()) {
-            abort(403);
-        }
-        
-        $timeEntry->delete();
-        
-        return redirect()->back()->with('success', 'Time entry deleted successfully!');
-    }
-}
-```
-
-#### Step 5.3: Admin Controller
-```bash
-ddev artisan make:controller AdminController
-```
-
-```php
-// app/Http/Controllers/AdminController.php
-namespace App\Http\Controllers;
-
-use App\Models\User;
-use App\Models\TimeEntry;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Carbon\Carbon;
-use App\Mail\MonthlyHoursReport;
-use Illuminate\Support\Facades\Mail;
-
-class AdminController extends Controller
-{
-    public function overview(Request $request)
-    {
-        $month = $request->get('month', Carbon::now()->format('Y-m'));
-        $date = Carbon::parse($month . '-01');
-        
-        $users = User::where('role', 'user')
-            ->with(['timeEntries' => function ($query) use ($date) {
-                $query->whereYear('date', $date->year)
-                      ->whereMonth('date', $date->month);
-            }])
-            ->get()
-            ->map(function ($user) {
-                return [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'total_hours' => $user->timeEntries->sum('total_hours'),
-                    'entries_count' => $user->timeEntries->count(),
-                ];
-            });
-        
-        $grandTotal = $users->sum('total_hours');
-        
-        return Inertia::render('Admin/Overview', [
-            'users' => $users,
-            'grandTotal' => $grandTotal,
-            'currentMonth' => $month,
-        ]);
-    }
-    
-    public function sendMonthlyReport(Request $request)
-    {
-        $month = $request->input('month', Carbon::now()->format('Y-m'));
-        $date = Carbon::parse($month . '-01');
-        
-        $users = User::where('role', 'user')
-            ->with(['timeEntries' => function ($query) use ($date) {
-                $query->whereYear('date', $date->year)
-                      ->whereMonth('date', $date->month);
-            }])
-            ->get()
-            ->map(function ($user) {
-                return [
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'total_hours' => $user->timeEntries->sum('total_hours'),
-                    'entries_count' => $user->timeEntries->count(),
-                ];
-            });
-        
-        Mail::to(auth()->user()->email)->send(new MonthlyHoursReport($users, $month));
-        
-        return redirect()->back()->with('success', 'Monthly report sent successfully!');
-    }
-}
-```
-
-#### Step 5.4: Invitation Controller
-```bash
-ddev artisan make:controller InvitationController
-```
-
-```php
-// app/Http/Controllers/InvitationController.php
-namespace App\Http\Controllers;
-
-use App\Models\Invitation;
-use App\Models\User;
-use App\Mail\UserInvitation;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Hash;
-use Carbon\Carbon;
-use Inertia\Inertia;
-
-class InvitationController extends Controller
-{
-    public function index()
-    {
-        $invitations = Invitation::with('inviter')
-            ->latest()
-            ->get();
-        
-        return Inertia::render('Admin/Invitations', [
-            'invitations' => $invitations,
-        ]);
-    }
-    
-    public function store(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email|unique:users,email|unique:invitations,email',
-        ]);
-        
-        $invitation = Invitation::create([
-            'email' => $request->email,
-            'token' => Invitation::generateToken(),
-            'invited_by' => auth()->id(),
-            'expires_at' => Carbon::now()->addDays(7),
-        ]);
-        
-        Mail::to($invitation->email)->send(new UserInvitation($invitation));
-        
-        return redirect()->back()->with('success', 'Invitation sent successfully!');
-    }
-    
-    public function accept($token)
-    {
-        $invitation = Invitation::where('token', $token)->firstOrFail();
-        
-        if ($invitation->isExpired()) {
-            return Inertia::render('Auth/InvitationExpired');
-        }
-        
-        if ($invitation->isAccepted()) {
-            return redirect()->route('login')->with('info', 'This invitation has already been accepted.');
-        }
-        
-        return Inertia::render('Auth/AcceptInvitation', [
-            'invitation' => $invitation,
-        ]);
-    }
-    
-    public function complete(Request $request, $token)
-    {
-        $invitation = Invitation::where('token', $token)->firstOrFail();
-        
-        if ($invitation->isExpired() || $invitation->isAccepted()) {
-            abort(403);
-        }
-        
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-        
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $invitation->email,
-            'password' => Hash::make($request->password),
-            'role' => 'user',
-            'email_verified_at' => now(),
-        ]);
-        
-        $invitation->update(['accepted_at' => now()]);
-        
-        auth()->login($user);
-        
-        return redirect()->route('dashboard')->with('success', 'Welcome! Your account has been created.');
-    }
-}
-```
-
----
-
-### Phase 6: Email Setup (1 hour)
-
-#### Step 6.1: Create Mail Classes
-```bash
-ddev artisan make:mail UserInvitation
-ddev artisan make:mail MonthlyHoursReport
-```
-
-```php
-// app/Mail/UserInvitation.php
-namespace App\Mail;
-
-use App\Models\Invitation;
-use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
-use Illuminate\Queue\SerializesModels;
-
-class UserInvitation extends Mailable
-{
-    use Queueable, SerializesModels;
-
-    public function __construct(public Invitation $invitation)
-    {}
-
-    public function build()
-    {
-        $url = route('invitation.accept', $this->invitation->token);
-        
-        return $this->subject('You\'re invited to join Hour Registration')
-                    ->markdown('emails.invitation', [
-                        'url' => $url,
-                        'expiresAt' => $this->invitation->expires_at,
-                    ]);
-    }
-}
-```
-
-```php
-// app/Mail/MonthlyHoursReport.php
-namespace App\Mail;
-
-use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
-use Illuminate\Queue\SerializesModels;
-
-class MonthlyHoursReport extends Mailable
-{
-    use Queueable, SerializesModels;
-
-    public function __construct(public $users, public $month)
-    {}
-
-    public function build()
-    {
-        return $this->subject("Monthly Hours Report - {$this->month}")
-                    ->markdown('emails.monthly-report', [
-                        'users' => $this->users,
-                        'month' => $this->month,
-                        'grandTotal' => collect($this->users)->sum('total_hours'),
-                    ]);
-    }
-}
-```
-
-#### Step 6.2: Create Email Views
-```bash
-# These will be created in resources/views/emails/
-```
-
-```blade
-{{-- resources/views/emails/invitation.blade.php --}}
-@component('mail::message')
-# You're Invited!
-
-You've been invited to join the Hour Registration app.
-
-@component('mail::button', ['url' => $url])
-Accept Invitation
-@endcomponent
-
-This invitation will expire on {{ $expiresAt->format('F j, Y') }}.
-
-Thanks,<br>
-{{ config('app.name') }}
-@endcomponent
-```
-
-```blade
-{{-- resources/views/emails/monthly-report.blade.php --}}
-@component('mail::message')
-# Monthly Hours Report - {{ $month }}
-
-Here's the summary of hours worked this month:
-
-@component('mail::table')
-| Name | Email | Hours | Entries |
-|:-----|:------|------:|--------:|
-@foreach($users as $user)
-| {{ $user['name'] }} | {{ $user['email'] }} | {{ number_format($user['total_hours'], 2) }} | {{ $user['entries_count'] }} |
-@endforeach
-| **Total** | | **{{ number_format($grandTotal, 2) }}** | |
-@endcomponent
-
-Thanks,<br>
-{{ config('app.name') }}
-@endcomponent
-```
-
----
-
-### Phase 7: Routes Configuration (30 minutes)
-
-```php
-// routes/web.php
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\TimeEntryController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\InvitationController;
-
-Route::middleware(['auth', 'verified'])->group(function () {
-    // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    
-    // Time Entries
-    Route::resource('time-entries', TimeEntryController::class)
-        ->except(['show']);
-    
-    // Admin Routes
-    Route::middleware(['admin'])->prefix('admin')->group(function () {
-        Route::get('/overview', [AdminController::class, 'overview'])->name('admin.overview');
-        Route::post('/send-report', [AdminController::class, 'sendMonthlyReport'])->name('admin.send-report');
-        Route::resource('invitations', InvitationController::class)->only(['index', 'store']);
-    });
-});
-
-// Public invitation acceptance routes
-Route::get('/invitation/{token}', [InvitationController::class, 'accept'])->name('invitation.accept');
-Route::post('/invitation/{token}/complete', [InvitationController::class, 'complete'])->name('invitation.complete');
-
-require __DIR__.'/auth.php';
-```
-
----
-
-### Phase 8: Frontend Components (4-5 hours)
-
-#### Step 8.1: Update App Layout
-```vue
-<!-- resources/js/Layouts/AppLayout.vue -->
-<script setup>
-import { Link, usePage } from '@inertiajs/vue3'
-import { computed } from 'vue'
-
-const page = usePage()
-const user = computed(() => page.props.auth.user)
-const isAdmin = computed(() => user.value?.role === 'admin')
-</script>
-
-<template>
-  <div class="min-h-screen bg-base-200">
-    <!-- Navbar -->
-    <div class="navbar bg-base-100 shadow-lg">
-      <div class="flex-1">
-        <Link href="/dashboard" class="btn btn-ghost text-xl">
-          ⏱️ Hour Registration
-        </Link>
-      </div>
-      <div class="flex-none gap-2">
-        <Link 
-          href="/dashboard" 
-          class="btn btn-ghost"
-          :class="{ 'btn-active': $page.url === '/dashboard' }"
-        >
-          Dashboard
-        </Link>
-        <Link 
-          href="/time-entries" 
-          class="btn btn-ghost"
-          :class="{ 'btn-active': $page.url.startsWith('/time-entries') }"
-        >
-          My Hours
-        </Link>
-        <Link 
-          v-if="isAdmin"
-          href="/admin/overview" 
-          class="btn btn-ghost"
-          :class="{ 'btn-active': $page.url.startsWith('/admin') }"
-        >
-          Admin
-        </Link>
-        <div class="dropdown dropdown-end">
-          <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
-            <div class="w-10 rounded-full bg-primary text-primary-content flex items-center justify-center">
-              {{ user.name.charAt(0).toUpperCase() }}
-            </div>
-          </div>
-          <ul tabindex="0" class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
-            <li><a>{{ user.name }}</a></li>
-            <li><a>{{ user.email }}</a></li>
-            <li>
-              <Link href="/logout" method="post" as="button">Logout</Link>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <!-- Main Content -->
-    <div class="container mx-auto p-4">
-      <!-- Flash Messages -->
-      <div v-if="$page.props.flash.success" class="alert alert-success mb-4">
-        <span>{{ $page.props.flash.success }}</span>
-      </div>
-      <div v-if="$page.props.flash.error" class="alert alert-error mb-4">
-        <span>{{ $page.props.flash.error }}</span>
-      </div>
-
-      <slot />
-    </div>
-  </div>
-</template>
-```
-
-#### Step 8.2: Dashboard Page
-```vue
-<!-- resources/js/Pages/Dashboard.vue -->
-<script setup>
-import AppLayout from '@/Layouts/AppLayout.vue'
-import TimeEntryForm from '@/Components/TimeEntryForm.vue'
-import TimeEntryCard from '@/Components/TimeEntryCard.vue'
-import HoursSummary from '@/Components/HoursSummary.vue'
-import { ref } from 'vue'
-
-defineProps({
-  entries: Array,
-  monthTotal: Number,
-  currentMonth: String
-})
-
-const showForm = ref(false)
-</script>
-
-<template>
-  <AppLayout>
-    <div class="grid gap-4">
-      <!-- Summary Card -->
-      <HoursSummary :total="monthTotal" :month="currentMonth" />
-
-      <!-- Quick Add Button -->
-      <div class="card bg-base-100 shadow-xl">
-        <div class="card-body">
-          <h2 class="card-title">Add Hours</h2>
-          <button 
-            v-if="!showForm"
-            @click="showForm = true" 
-            class="btn btn-primary"
-          >
-            ➕ Add New Entry
-          </button>
-          <TimeEntryForm 
-            v-else 
-            @cancel="showForm = false"
-            @success="showForm = false"
-          />
-        </div>
-      </div>
-
-      <!-- Recent Entries -->
-      <div class="card bg-base-100 shadow-xl">
-        <div class="card-body">
-          <h2 class="card-title mb-4">Recent Entries</h2>
-          <div v-if="entries.length === 0" class="text-center py-8 text-base-content/60">
-            No entries yet. Add your first time entry above!
-          </div>
-          <div v-else class="space-y-2">
-            <TimeEntryCard 
-              v-for="entry in entries.slice(0, 5)" 
-              :key="entry.id"
-              :entry="entry"
-            />
-          </div>
-          <Link href="/time-entries" class="btn btn-outline btn-sm mt-4">
-            View All Entries →
-          </Link>
-        </div>
-      </div>
-    </div>
-  </AppLayout>
-</template>
-```
-
-#### Step 8.3: Time Entry Form Component
-```vue
-<!-- resources/js/Components/TimeEntryForm.vue -->
-<script setup>
-import { useForm } from '@inertiajs/vue3'
-import dayjs from 'dayjs'
-
-const emit = defineEmits(['cancel', 'success'])
-
-const form = useForm({
-  date: dayjs().format('YYYY-MM-DD'),
-  shift_start: '09:00',
-  shift_end: '17:00',
-  break_minutes: 30,
-  notes: ''
-})
-
-const submit = () => {
-  form.post('/time-entries', {
-    onSuccess: () => {
-      emit('success')
-      form.reset()
-    }
-  })
-}
-</script>
-
-<template>
-  <form @submit.prevent="submit" class="space-y-4">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <!-- Date -->
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">Date</span>
-        </label>
-        <input 
-          type="date" 
-          v-model="form.date" 
-          class="input input-bordered"
-          :class="{ 'input-error': form.errors.date }"
-        />
-        <label v-if="form.errors.date" class="label">
-          <span class="label-text-alt text-error">{{ form.errors.date }}</span>
-        </label>
-      </div>
-
-      <!-- Shift Start -->
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">Shift Start</span>
-        </label>
-        <input 
-          type="time" 
-          v-model="form.shift_start" 
-          class="input input-bordered"
-          :class="{ 'input-error': form.errors.shift_start }"
-        />
-        <label v-if="form.errors.shift_start" class="label">
-          <span class="label-text-alt text-error">{{ form.errors.shift_start }}</span>
-        </label>
-      </div>
-
-      <!-- Shift End -->
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">Shift End</span>
-        </label>
-        <input 
-          type="time" 
-          v-model="form.shift_end" 
-          class="input input-bordered"
-          :class="{ 'input-error': form.errors.shift_end }"
-        />
-        <label v-if="form.errors.shift_end" class="label">
-          <span class="label-text-alt text-error">{{ form.errors.shift_end }}</span>
-        </label>
-      </div>
-
-      <!-- Break Minutes -->
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">Break (minutes)</span>
-        </label>
-        <input 
-          type="number" 
-          v-model.number="form.break_minutes" 
-          min="0"
-          class="input input-bordered"
-          :class="{ 'input-error': form.errors.break_minutes }"
-        />
-        <label v-if="form.errors.break_minutes" class="label">
-          <span class="label-text-alt text-error">{{ form.errors.break_minutes }}</span>
-        </label>
-      </div>
-    </div>
-
-    <!-- Notes -->
-    <div class="form-control">
-      <label class="label">
-        <span class="label-text">Notes (optional)</span>
-      </label>
-      <textarea 
-        v-model="form.notes" 
-        class="textarea textarea-bordered"
-        :class="{ 'textarea-error': form.errors.notes }"
-        rows="2"
-      ></textarea>
-    </div>
-
-    <!-- Actions -->
-    <div class="flex gap-2 justify-end">
-      <button 
-        type="button" 
-        @click="emit('cancel')" 
-        class="btn btn-ghost"
-      >
-        Cancel
-      </button>
-      <button 
-        type="submit" 
-        class="btn btn-primary"
-        :disabled="form.processing"
-      >
-        {{ form.processing ? 'Saving...' : 'Save Entry' }}
-      </button>
-    </div>
-  </form>
-</template>
-```
-
-#### Step 8.4: Time Entry Card Component
-```vue
-<!-- resources/js/Components/TimeEntryCard.vue -->
-<script setup>
-import { computed } from 'vue'
-import dayjs from 'dayjs'
-
-const props = defineProps({
-  entry: Object
-})
-
-const formattedDate = computed(() => {
-  return dayjs(props.entry.date).format('ddd, MMM D, YYYY')
-})
-</script>
-
-<template>
-  <div class="card bg-base-100 border border-base-300">
-    <div class="card-body p-4">
-      <div class="flex justify-between items-start">
-        <div>
-          <h3 class="font-semibold">{{ formattedDate }}</h3>
-          <p class="text-sm text-base-content/60">
-            {{ entry.shift_start }} - {{ entry.shift_end }}
-            <span v-if="entry.break_minutes > 0">
-              ({{ entry.break_minutes }}min break)
-            </span>
-          </p>
-          <p v-if="entry.notes" class="text-sm mt-1">{{ entry.notes }}</p>
-        </div>
-        <div class="badge badge-primary badge-lg">
-          {{ entry.total_hours }}h
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-```
-
-#### Step 8.5: Hours Summary Component
-```vue
-<!-- resources/js/Components/HoursSummary.vue -->
-<script setup>
-import dayjs from 'dayjs'
-import { computed } from 'vue'
-
-const props = defineProps({
-  total: Number,
-  month: String
-})
-
-const monthName = computed(() => {
-  return dayjs(props.month + '-01').format('MMMM YYYY')
-})
-</script>
-
-<template>
-  <div class="stats shadow">
-    <div class="stat">
-      <div class="stat-figure text-primary">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-8 h-8 stroke-current">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-        </svg>
-      </div>
-      <div class="stat-title">{{ monthName }}</div>
-      <div class="stat-value text-primary">{{ total }}h</div>
-      <div class="stat-desc">Total hours worked</div>
-    </div>
-  </div>
-</template>
-```
-
-#### Step 8.6: Month Navigator Component
-```vue
-<!-- resources/js/Components/MonthNavigator.vue -->
-<script setup>
-import { router } from '@inertiajs/vue3'
-import dayjs from 'dayjs'
-import { computed } from 'vue'
-
-const props = defineProps({
-  currentMonth: String
-})
-
-const currentDate = computed(() => dayjs(props.currentMonth + '-01'))
-const displayMonth = computed(() => currentDate.value.format('MMMM YYYY'))
-
-const goToPreviousMonth = () => {
-  const prevMonth = currentDate.value.subtract(1, 'month').format('YYYY-MM')
-  router.get(window.location.pathname, { month: prevMonth }, { preserveState: true })
-}
-
-const goToNextMonth = () => {
-  const nextMonth = currentDate.value.add(1, 'month').format('YYYY-MM')
-  router.get(window.location.pathname, { month: nextMonth }, { preserveState: true })
-}
-
-const goToCurrentMonth = () => {
-  const currentMonth = dayjs().format('YYYY-MM')
-  router.get(window.location.pathname, { month: currentMonth }, { preserveState: true })
-}
-
-const isCurrentMonth = computed(() => {
-  return currentDate.value.format('YYYY-MM') === dayjs().format('YYYY-MM')
-})
-</script>
-
-<template>
-  <div class="flex items-center justify-between">
-    <button @click="goToPreviousMonth" class="btn btn-circle btn-sm">
-      ‹
-    </button>
-    <div class="flex items-center gap-2">
-      <h2 class="text-xl font-bold">{{ displayMonth }}</h2>
-      <button 
-        v-if="!isCurrentMonth"
-        @click="goToCurrentMonth" 
-        class="btn btn-xs btn-outline"
-      >
-        Today
-      </button>
-    </div>
-    <button @click="goToNextMonth" class="btn btn-circle btn-sm">
-      ›
-    </button>
-  </div>
-</template>
-```
-
-#### Step 8.7: Time Entries Index Page
-```vue
-<!-- resources/js/Pages/TimeEntries/Index.vue -->
-<script setup>
-import AppLayout from '@/Layouts/AppLayout.vue'
-import TimeEntryCard from '@/Components/TimeEntryCard.vue'
-import TimeEntryForm from '@/Components/TimeEntryForm.vue'
-import MonthNavigator from '@/Components/MonthNavigator.vue'
-import HoursSummary from '@/Components/HoursSummary.vue'
-import { ref } from 'vue'
-
-defineProps({
-  entries: Array,
-  monthTotal: Number,
-  currentMonth: String
-})
-
-const showForm = ref(false)
-</script>
-
-<template>
-  <AppLayout>
-    <div class="space-y-4">
-      <MonthNavigator :current-month="currentMonth" />
-      
-      <HoursSummary :total="monthTotal" :month="currentMonth" />
-
-      <div class="card bg-base-100 shadow-xl">
-        <div class="card-body">
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="card-title">All Entries</h2>
-            <button 
-              @click="showForm = !showForm" 
-              class="btn btn-primary btn-sm"
-            >
-              {{ showForm ? 'Cancel' : '➕ Add Entry' }}
-            </button>
-          </div>
-
-          <TimeEntryForm 
-            v-if="showForm"
-            @cancel="showForm = false"
-            @success="showForm = false"
-            class="mb-4 p-4 bg-base-200 rounded-lg"
-          />
-
-          <div v-if="entries.length === 0" class="text-center py-8 text-base-content/60">
-            No entries for this month.
-          </div>
-          <div v-else class="space-y-2">
-            <TimeEntryCard 
-              v-for="entry in entries" 
-              :key="entry.id"
-              :entry="entry"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  </AppLayout>
-</template>
-```
-
-#### Step 8.8: Admin Overview Page
-```vue
-<!-- resources/js/Pages/Admin/Overview.vue -->
-<script setup>
-import AppLayout from '@/Layouts/AppLayout.vue'
-import MonthNavigator from '@/Components/MonthNavigator.vue'
-import { useForm } from '@inertiajs/vue3'
-
-const props = defineProps({
-  users: Array,
-  grandTotal: Number,
-  currentMonth: String
-})
-
-const form = useForm({
-  month: props.currentMonth
-})
-
-const sendReport = () => {
-  form.post('/admin/send-report', {
-    onSuccess: () => form.reset()
-  })
-}
-</script>
-
-<template>
-  <AppLayout>
-    <div class="space-y-4">
-      <div class="flex justify-between items-center">
-        <h1 class="text-2xl font-bold">Admin Overview</h1>
-        <Link href="/admin/invitations" class="btn btn-outline btn-sm">
-          Manage Invitations
-        </Link>
-      </div>
-
-      <MonthNavigator :current-month="currentMonth" />
-
-      <!-- Summary Stats -->
-      <div class="stats shadow w-full">
-        <div class="stat">
-          <div class="stat-title">Total Users</div>
-          <div class="stat-value">{{ users.length }}</div>
-        </div>
-        <div class="stat">
-          <div class="stat-title">Total Hours</div>
-          <div class="stat-value text-primary">{{ grandTotal }}h</div>
-        </div>
-        <div class="stat">
-          <div class="stat-title">Average per User</div>
-          <div class="stat-value text-secondary">
-            {{ users.length > 0 ? (grandTotal / users.length).toFixed(1) : 0 }}h
-          </div>
-        </div>
-      </div>
-
-      <!-- User Hours Table -->
-      <div class="card bg-base-100 shadow-xl">
-        <div class="card-body">
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="card-title">User Hours</h2>
-            <button 
-              @click="sendReport" 
-              class="btn btn-primary btn-sm"
-              :disabled="form.processing"
-            >
-              {{ form.processing ? 'Sending...' : '📧 Email Report' }}
-            </button>
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="table table-zebra">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th class="text-right">Entries</th>
-                  <th class="text-right">Total Hours</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="user in users" :key="user.id">
-                  <td>{{ user.name }}</td>
-                  <td>{{ user.email }}</td>
-                  <td class="text-right">{{ user.entries_count }}</td>
-                  <td class="text-right">
-                    <span class="badge badge-primary">{{ user.total_hours }}h</span>
-                  </td>
-                </tr>
-                <tr v-if="users.length === 0">
-                  <td colspan="4" class="text-center text-base-content/60">
-                    No users with entries this month
-                  </td>
-                </tr>
-              </tbody>
-              <tfoot v-if="users.length > 0">
-                <tr class="font-bold">
-                  <td colspan="3" class="text-right">Total:</td>
-                  <td class="text-right">{{ grandTotal }}h</td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </AppLayout>
-</template>
-```
-
-#### Step 8.9: Admin Invitations Page
-```vue
-<!-- resources/js/Pages/Admin/Invitations.vue -->
-<script setup>
-import AppLayout from '@/Layouts/AppLayout.vue'
-import { useForm } from '@inertiajs/vue3'
-import dayjs from 'dayjs'
-
-defineProps({
-  invitations: Array
-})
-
-const form = useForm({
-  email: ''
-})
-
-const sendInvitation = () => {
-  form.post('/admin/invitations', {
-    onSuccess: () => form.reset()
-  })
-}
-</script>
-
-<template>
-  <AppLayout>
-    <div class="space-y-4">
-      <div class="flex justify-between items-center">
-        <h1 class="text-2xl font-bold">User Invitations</h1>
-        <Link href="/admin/overview" class="btn btn-outline btn-sm">
-          ← Back to Overview
-        </Link>
-      </div>
-
-      <!-- Send Invitation Form -->
-      <div class="card bg-base-100 shadow-xl">
-        <div class="card-body">
-          <h2 class="card-title">Send New Invitation</h2>
-          <form @submit.prevent="sendInvitation" class="flex gap-2">
-            <div class="form-control flex-1">
-              <input 
-                type="email" 
-                v-model="form.email"
-                placeholder="user@example.com"
-                class="input input-bordered"
-                :class="{ 'input-error': form.errors.email }"
-                required
-              />
-              <label v-if="form.errors.email" class="label">
-                <span class="label-text-alt text-error">{{ form.errors.email }}</span>
-              </label>
-            </div>
-            <button 
-              type="submit" 
-              class="btn btn-primary"
-              :disabled="form.processing"
-            >
-              {{ form.processing ? 'Sending...' : 'Send Invitation' }}
-            </button>
-          </form>
-        </div>
-      </div>
-
-      <!-- Invitations List -->
-      <div class="card bg-base-100 shadow-xl">
-        <div class="card-body">
-          <h2 class="card-title">Sent Invitations</h2>
-          
-          <div class="overflow-x-auto">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Email</th>
-                  <th>Invited By</th>
-                  <th>Status</th>
-                  <th>Expires At</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="invitation in invitations" :key="invitation.id">
-                  <td>{{ invitation.email }}</td>
-                  <td>{{ invitation.inviter.name }}</td>
-                  <td>
-                    <span 
-                      class="badge"
-                      :class="{
-                        'badge-success': invitation.accepted_at,
-                        'badge-error': !invitation.accepted_at && dayjs(invitation.expires_at).isBefore(dayjs()),
-                        'badge-warning': !invitation.accepted_at && dayjs(invitation.expires_at).isAfter(dayjs())
-                      }"
-                    >
-                      {{ invitation.accepted_at ? 'Accepted' : 
-                         dayjs(invitation.expires_at).isBefore(dayjs()) ? 'Expired' : 'Pending' }}
-                    </span>
-                  </td>
-                  <td>{{ dayjs(invitation.expires_at).format('MMM D, YYYY') }}</td>
-                </tr>
-                <tr v-if="invitations.length === 0">
-                  <td colspan="4" class="text-center text-base-content/60">
-                    No invitations sent yet
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </AppLayout>
-</template>
-```
-
----
-
-### Phase 9: PWA Setup (1 hour)
-
-#### Step 9.1: Configure Vite PWA Plugin
-```javascript
-// vite.config.js
-import { defineConfig } from 'vite';
-import laravel from 'laravel-vite-plugin';
-import vue from '@vitejs/plugin-vue';
-import { VitePWA } from 'vite-plugin-pwa';
-
-export default defineConfig({
-    plugins: [
-        laravel({
-            input: 'resources/js/app.js',
-            refresh: true,
-        }),
-        vue({
-            template: {
-                transformAssetUrls: {
-                    base: null,
-                    includeAbsolute: false,
-                },
-            },
-        }),
-        VitePWA({
-            registerType: 'autoUpdate',
-            includeAssets: ['favicon.ico', 'apple-touch-icon.png'],
-            manifest: {
-                name: 'Hour Registration',
-                short_name: 'HourReg',
-                description: 'Track your work hours easily',
-                theme_color: '#ffffff',
-                background_color: '#ffffff',
-                display: 'standalone',
-                icons: [
-                    {
-                        src: '/pwa-192x192.png',
-                        sizes: '192x192',
-                        type: 'image/png'
-                    },
-                    {
-                        src: '/pwa-512x512.png',
-                        sizes: '512x512',
-                        type: 'image/png'
-                    }
-                ]
-            },
-            workbox: {
-                globPatterns: ['**/*.{js,css,html,ico,png,svg}']
-            }
-        })
+- Add a `Rule::unique('time_entries')` rule on the `date` field scoped to the authenticated user:
+    ```php
+    'date' => [
+        'required', 'date',
+        Rule::unique('time_entries')->where('user_id', $this->user()->id)
+            ->ignore($this->route('time_entry')), // allows update
     ],
-});
-```
+    ```
+- Add a custom error message: `'date.unique' => 'You already have an entry for this date.'`
 
-#### Step 9.2: Add PWA Assets
-```bash
-# Create icon files in public/ directory
-# pwa-192x192.png
-# pwa-512x512.png
-# favicon.ico
-# apple-touch-icon.png
-```
+**Step 3 — Create `UpdateTimeEntryRequest.php`**
 
----
+- `ddev artisan make:request UpdateTimeEntryRequest`
+- Same rules as `StoreTimeEntryRequest` but the unique rule uses `->ignore($this->route('time_entry'))` to exclude the entry being updated
 
-### Phase 10: Testing & Deployment (2-3 hours)
+**Step 4 — Update `TimeEntryController@update`**
 
-#### Step 10.1: Basic Feature Testing
-```bash
-ddev artisan test
-```
+- Change the type-hint from `Request` to `UpdateTimeEntryRequest`
 
-#### Step 10.2: Configure for Production
-```bash
-# Update .env for production
-APP_ENV=production
-APP_DEBUG=false
-APP_URL=https://yourdomain.com
+**Step 5 — Frontend error display**
 
-# Configure mail settings (use your email provider)
-MAIL_MAILER=smtp
-MAIL_HOST=your-smtp-host
-MAIL_PORT=587
-MAIL_USERNAME=your-email
-MAIL_PASSWORD=your-password
-MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS=noreply@yourdomain.com
-MAIL_FROM_NAME="${APP_NAME}"
-```
+- `TimeEntryForm.vue` and `EditTimeEntryModal.vue` should already show per-field errors via `form.errors.date` — verify this works with the new unique error
 
-#### Step 10.3: Optimize for Production
-```bash
-ddev composer install --optimize-autoloader --no-dev
-ddev artisan config:cache
-ddev artisan route:cache
-ddev artisan view:cache
-ddev npm run build
-```
+**Step 6 — Run migration & test**
 
-#### Step 10.4: Deploy to Plesk
-1. Upload files via Git or FTP
-2. Set document root to `/public`
-3. Run migrations: `ddev artisan migrate --force`
-4. Set up scheduled tasks for email (if needed later)
-5. Configure SSL certificate
+- `ddev artisan migrate`
+- `ddev artisan test --filter=TimeEntry`
+- Manual: try adding two entries for the same date, confirm error appears
 
 ---
 
-## 📝 Development Workflow
+#### 2.3 Admin User Detail Page
 
-### Starting Development
-```bash
-# Start DDEV environment (web + db containers)
-ddev start
+**Step 1 — Add controller method**
 
-# Start Vite dev server with HMR
-ddev npm run dev
+- In `AdminController.php`, add `userDetail(User $user)` method
+- Query the user's time entries for the requested month (use `?month=YYYY-MM` parameter, same pattern as `overview()`)
+- Return `Inertia::render('Admin/UserDetail', ['user' => $user, 'entries' => ..., 'monthTotal' => ..., 'currentMonth' => ...])`
 
-# Run queue worker for emails (separate terminal)
-ddev artisan queue:work
-```
+**Step 2 — Add route**
 
-### Daily Development
-1. Create feature branch
-2. Make changes
-3. Test locally
-4. Commit and push
-5. Deploy to staging/production
+- In `routes/web.php`, inside the admin middleware group:
+    ```php
+    Route::get('/admin/users/{user}', [AdminController::class, 'userDetail'])->name('admin.user-detail');
+    ```
+
+**Step 3 — Create `Admin/UserDetail.vue` page**
+
+- File: `resources/js/Pages/Admin/UserDetail.vue`
+- Props: `user`, `entries`, `monthTotal`, `currentMonth`
+- Show user name/email at the top
+- Reuse `MonthNavigator` (point links to same route with `?month=` param)
+- Reuse `HoursSummary` for the monthly total
+- List entries using `TimeEntryCard` (read-only, no edit/delete for admin)
+
+**Step 4 — Link from `Admin/Overview.vue`**
+
+- Make each user row in the overview table clickable
+- Wrap user name in `<Link :href="route('admin.user-detail', user.id)">`
+
+**Step 5 — Test**
+
+- Manual: navigate to admin overview, click a user, verify detail page loads with correct entries
+
+---
+
+#### 2.4 Dark Mode
+
+DaisyUI themes are already configured in `resources/css/app.css` (light default + dark).
+
+**Step 1 — Create `ThemeToggle.vue` component**
+
+- File: `resources/js/Components/ThemeToggle.vue`
+- DaisyUI swap or toggle control (sun/moon icons)
+- On mount: read `localStorage.getItem('theme')`, default to `'light'`
+- On toggle: set `document.documentElement.setAttribute('data-theme', theme)` and persist to `localStorage`
+
+**Step 2 — Mount in `AuthenticatedLayout.vue`**
+
+- Import `ThemeToggle` and place it in the navbar (next to the user avatar dropdown)
+
+**Step 3 — Initialize theme on app load**
+
+- In `resources/js/app.js`, before `createApp()`:
+    ```js
+    const theme = localStorage.getItem("theme") || "light";
+    document.documentElement.setAttribute("data-theme", theme);
+    ```
+    This prevents a flash of wrong theme on page load.
+
+**Step 4 — Also apply to `GuestLayout.vue`**
+
+- Add the same theme initialization for login/invitation pages
+
+**Step 5 — Test**
+
+- Toggle theme, refresh page, confirm it persists
+- Check all pages render correctly in dark mode (forms, modals, cards)
+
+---
+
+#### 2.5 User Preferences & Multilingual (i18n)
+
+**Step 1 — Migration: add `preferences` column**
+
+- `ddev artisan make:migration add_preferences_to_users_table`
+- `$table->json('preferences')->nullable()->after('role')`
+- In User model: add `'preferences'` to `$casts` as `array` and to `$fillable`
+
+**Step 2 — Install vue-i18n**
+
+- `ddev npm install vue-i18n`
+
+**Step 3 — Create translation files**
+
+- `resources/js/lang/en.json` — all English UI strings (buttons, labels, headings, messages)
+- `resources/js/lang/nl.json` — Dutch translations
+- Organize by section: `{ "dashboard": { "title": "Dashboard", ... }, "timeEntries": { ... }, "admin": { ... }, "nav": { ... } }`
+
+**Step 4 — Configure vue-i18n in `app.js`**
+
+- Import `createI18n` from `vue-i18n`
+- Import both locale files
+- Create i18n instance with `locale` from page props (falls back to `'en'`)
+- Register as Vue plugin: `app.use(i18n)`
+
+**Step 5 — Pass locale via Inertia shared data**
+
+- In `HandleInertiaRequests.php`, add to `share()`:
+    ```php
+    'locale' => auth()->user()?->preferences['language'] ?? 'en',
+    ```
+
+**Step 6 — Create `Preferences.vue` page**
+
+- File: `resources/js/Pages/Preferences.vue`
+- Language selector (`<select>` with `en` / `nl` options)
+- Theme selector (or note that theme is toggled from navbar)
+- Save button: `form.patch(route('preferences.update'))`
+
+**Step 7 — Create `PreferencesController.php`**
+
+- `ddev artisan make:controller PreferencesController`
+- `edit()` — return `Inertia::render('Preferences', ['preferences' => auth()->user()->preferences ?? []])`
+- `update(Request $request)` — validate and merge into user's `preferences` JSON, redirect back with success
+
+**Step 8 — Add routes**
+
+- In `routes/web.php` (auth group):
+    ```php
+    Route::get('/preferences', [PreferencesController::class, 'edit'])->name('preferences.edit');
+    Route::patch('/preferences', [PreferencesController::class, 'update'])->name('preferences.update');
+    ```
+
+**Step 9 — Add nav link**
+
+- In `AuthenticatedLayout.vue`, add "Preferences" link in the user dropdown menu (next to Profile)
+
+**Step 10 — Replace hardcoded strings**
+
+- Go through all Vue pages and components, replace hardcoded text with `{{ $t('section.key') }}`
+- Do this page by page: Dashboard, TimeEntries/Index, Admin/Overview, Admin/Invitations, Admin/UserDetail, Preferences, nav/layout
+
+**Step 11 — Run migration & test**
+
+- `ddev artisan migrate`
+- Switch language in preferences, confirm all strings change
+- Verify locale persists across page navigations
+
+---
+
+#### 2.6 OAuth Login (Google)
+
+**Step 1 — Install Socialite**
+
+- `ddev composer require laravel/socialite`
+
+**Step 2 — Add `google_id` column to users**
+
+- `ddev artisan make:migration add_google_id_to_users_table`
+- `$table->string('google_id')->nullable()->unique()->after('email')`
+- Make `password` column nullable in users table (Google-only users won't have one)
+- Update User model: add `google_id` to `$fillable`
+
+**Step 3 — Configure Google OAuth**
+
+- Add to `config/services.php`:
+    ```php
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI', '/auth/google/callback'),
+    ],
+    ```
+- Add placeholders to `.env.example`
+
+**Step 4 — Create `SocialiteController.php`**
+
+- `ddev artisan make:controller Auth/SocialiteController`
+- `redirectToGoogle()` — return `Socialite::driver('google')->redirect()`
+- `handleGoogleCallback()`:
+    - Get user info from Google
+    - Find existing user by `google_id` or `email`
+    - If found: update `google_id` if missing, login
+    - If not found: reject (invitation-only system — user must be invited first)
+    - Redirect to dashboard
+
+**Step 5 — Add routes**
+
+- In `routes/web.php` (guest middleware):
+    ```php
+    Route::get('/auth/google', [SocialiteController::class, 'redirectToGoogle'])->name('auth.google');
+    Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
+    ```
+
+**Step 6 — Update `Login.vue`**
+
+- Add a "Login with Google" button (DaisyUI btn with Google icon) below the login form
+- Links to `route('auth.google')`
+- Add a divider between the form and the OAuth button
+
+**Step 7 — Test**
+
+- Set up Google OAuth credentials in `.env`
+- Test login with Google for an existing invited user
+- Test that non-invited Google users are rejected
+
+---
+
+#### 2.7 Export to CSV/PDF
+
+**Step 1 — Install dompdf**
+
+- `ddev composer require barryvdh/laravel-dompdf`
+
+**Step 2 — Add user CSV export**
+
+- In `TimeEntryController`, add `exportCsv(Request $request)` method
+- Query authenticated user's entries for the given `?month=` parameter
+- Generate CSV with columns: Date, Start, End, Break (min), Total Hours, Notes
+- Return as download response with filename `hours-YYYY-MM.csv`
+
+**Step 3 — Add admin CSV export**
+
+- In `AdminController`, add `exportCsv(Request $request)` method
+- Same month query as `overview()` but outputs all users' entries
+- CSV columns: User, Date, Start, End, Break, Total Hours
+- Filename: `team-hours-YYYY-MM.csv`
+
+**Step 4 — Add admin PDF export**
+
+- In `AdminController`, add `exportPdf(Request $request)` method
+- Create Blade view: `resources/views/reports/monthly.blade.php`
+    - Company header, month title
+    - Table per user: date, start, end, break, hours
+    - User totals, grand total at bottom
+- Generate PDF via `Pdf::loadView('reports.monthly', $data)->download('report-YYYY-MM.pdf')`
+
+**Step 5 — Add routes**
+
+- In `routes/web.php`:
+    ```php
+    // Auth group
+    Route::get('/time-entries/export', [TimeEntryController::class, 'exportCsv'])->name('time-entries.export');
+    // Admin group
+    Route::get('/admin/export/csv', [AdminController::class, 'exportCsv'])->name('admin.export-csv');
+    Route::get('/admin/export/pdf', [AdminController::class, 'exportPdf'])->name('admin.export-pdf');
+    ```
+
+**Step 6 — Add export buttons to frontend**
+
+- `TimeEntries/Index.vue`: add "Export CSV" button next to the month navigator, links to `route('time-entries.export', { month: currentMonth })`
+- `Admin/Overview.vue`: add "Export CSV" and "Export PDF" buttons, linking to respective routes with `month` param
+- Use `<a>` tags (not Inertia links) so the browser downloads the file
+
+**Step 7 — Test**
+
+- Download CSV as user, open in spreadsheet, verify data
+- Download CSV and PDF as admin, verify all users included
+
+---
+
+**Step 5 — Test**
+
+- Set timezone to something different from server timezone
+- Add an entry, verify stored in UTC in database
+- Verify displayed in user's timezone in the UI
+
+---
+
+#### Recommended Implementation Order
+
+1. **2.2 One Entry Per Day** — small, self-contained, no dependencies
+2. **2.1 Edit/Delete Time Entries** — core UX improvement, no new packages
+3. **2.3 Admin User Detail** — small addition, builds on existing admin page
+4. **2.4 Dark Mode** — quick win, already mostly configured
+5. **2.5 Preferences & i18n** — larger feature, needed before 2.8
+6. **2.7 Export CSV/PDF** — standalone, can be done in parallel with i18n
+7. **2.6 OAuth (Google)** — requires external setup (Google Cloud Console)
+8. **2.8 Multiple Time Zones** — depends on 2.5 (preferences), most complex
+
+---
+
+### Phase 3 — Advanced Features
+
+#### 3.1 Shift Approval Workflow
+
+- Add `status` enum column to `time_entries`: `pending`, `approved`, `rejected` (default: `pending`)
+- Migration + model update
+- Admin UI: approve/reject buttons per entry in `Admin/UserDetail.vue`
+- User UI: show status badge on each entry in `TimeEntries/Index.vue`
+- Optional: bulk approve for a month
+- Notification: email user when entry is approved/rejected
+
+#### 3.2 Hourly Rate Calculations
+
+- Add `hourly_rate` decimal column to users table (migration)
+- Admin can set rate per user in `Admin/UserDetail.vue`
+- Calculate and display earnings per entry and monthly total
+- Include earnings in email reports and CSV/PDF exports
+
+#### 3.3 Automatic Monthly Email Reports (Scheduled)
+
+- Create `SendMonthlyReportJob` (queued)
+- Register in `app/Console/Kernel.php` or `routes/console.php` — schedule monthly on 1st at 08:00
+- Reuse existing `MonthlyHoursReport` mailable
+- Send to all admin users automatically
+
+#### 3.4 Mobile Native App
+
+- Evaluate Capacitor.js wrapper around the existing PWA
+- Configure native build for iOS and Android
+- Add push notification support via Firebase/APNs
 
 ---
 
 ## 🎯 MVP Feature Checklist
 
 ### User Features
+
 - [ ] User login (email/password)
 - [ ] User dashboard with quick add
 - [ ] Add time entry (start, end, break)
@@ -1752,12 +529,14 @@ ddev artisan queue:work
 - [ ] Responsive mobile design
 
 ### Admin Features
+
 - [ ] Admin overview of all users
 - [ ] Monthly hours per user
 - [ ] Send email report (manually)
 - [ ] Invite new users via email
 
 ### Technical
+
 - [ ] Database setup
 - [ ] Authentication
 - [ ] Email functionality
@@ -1769,20 +548,24 @@ ddev artisan queue:work
 ## 🚀 Future Enhancements (Post-MVP)
 
 ### Phase 2 Features
+
 - [ ] Edit/delete time entries
+- [ ] user can only have one time entry per day
 - [ ] OAuth login (Google)
 - [ ] Export to CSV/PDF
-- [ ] Automatic monthly email reports (scheduled)
 - [ ] Multiple time zones support
 - [ ] Dark mode
 - [ ] User preferences
+- [ ] Multingual, user can set language from preferences
+- [ ] User overview for admin
 
 ### Phase 3 Features
-- [ ] Project/task categorization
+
+- [ ] Shift approval workflow (by admins)
 - [ ] Hourly rate calculations
-- [ ] Invoice generation
-- [ ] Team/department grouping
-- [ ] Advanced reporting & analytics
+- [ ] Automatic monthly email reports (scheduled)
+- [ ]
+- [ ]
 - [ ] Mobile native app
 
 ---
@@ -1798,15 +581,19 @@ ddev artisan queue:work
 ## 🐛 Common Issues & Solutions
 
 ### Issue: Inertia not rendering
+
 **Solution**: Check `HandleInertiaRequests` middleware is registered
 
 ### Issue: Tailwind not working
+
 **Solution**: Run `ddev npm run build` and clear browser cache
 
 ### Issue: Emails not sending
+
 **Solution**: Check `.env` mail config and run `ddev artisan queue:work`
 
 ### Issue: 403 errors on admin pages
+
 **Solution**: Verify AdminMiddleware is registered and user has admin role
 
 ---

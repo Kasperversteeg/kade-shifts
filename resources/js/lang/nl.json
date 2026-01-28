@@ -1,0 +1,86 @@
+{
+    "nav": {
+        "dashboard": "Dashboard",
+        "myHours": "Mijn Uren",
+        "admin": "Admin",
+        "profile": "Profiel",
+        "preferences": "Voorkeuren",
+        "logOut": "Uitloggen"
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "addHours": "Uren Toevoegen",
+        "addNewEntry": "+ Nieuwe Registratie",
+        "recentEntries": "Recente Registraties",
+        "noEntries": "Nog geen registraties. Voeg hierboven je eerste uren toe!",
+        "viewAll": "Alle Registraties Bekijken"
+    },
+    "timeEntries": {
+        "title": "Mijn Uren",
+        "allEntries": "Alle Registraties",
+        "addEntry": "+ Registratie Toevoegen",
+        "cancel": "Annuleren",
+        "noEntries": "Geen registraties voor deze maand.",
+        "date": "Datum",
+        "shiftStart": "Dienst Start",
+        "shiftEnd": "Dienst Einde",
+        "breakMinutes": "Pauze (minuten)",
+        "notes": "Notities (optioneel)",
+        "save": "Opslaan",
+        "saving": "Opslaan...",
+        "edit": "Registratie Bewerken",
+        "update": "Bijwerken",
+        "deleteConfirm": "Weet je zeker dat je deze registratie wilt verwijderen?",
+        "break": "{minutes}min pauze"
+    },
+    "admin": {
+        "overview": "Admin Overzicht",
+        "manageInvitations": "Uitnodigingen Beheren",
+        "totalUsers": "Totaal Gebruikers",
+        "totalHours": "Totaal Uren",
+        "avgPerUser": "Gemiddeld per Gebruiker",
+        "userHours": "Uren per Gebruiker",
+        "emailReport": "Rapport E-mailen",
+        "sending": "Verzenden...",
+        "name": "Naam",
+        "email": "E-mail",
+        "entries": "Registraties",
+        "total": "Totaal:",
+        "noUsersThisMonth": "Geen gebruikers met registraties deze maand",
+        "back": "Terug"
+    },
+    "invitations": {
+        "title": "Uitnodigingen Beheren",
+        "sendInvite": "Uitnodiging Versturen",
+        "emailPlaceholder": "Voer e-mailadres in",
+        "send": "Verstuur Uitnodiging",
+        "allInvitations": "Alle Uitnodigingen",
+        "status": "Status",
+        "invitedBy": "Uitgenodigd Door",
+        "date": "Datum",
+        "pending": "In Afwachting",
+        "expired": "Verlopen",
+        "accepted": "Geaccepteerd",
+        "noInvitations": "Nog geen uitnodigingen verstuurd"
+    },
+    "preferences": {
+        "title": "Voorkeuren",
+        "language": "Taal",
+        "save": "Voorkeuren Opslaan",
+        "saved": "Voorkeuren opgeslagen."
+    },
+    "month": {
+        "today": "Vandaag"
+    },
+    "summary": {
+        "totalHours": "Totaal Uren",
+        "hoursUnit": "u"
+    },
+    "export": {
+        "csv": "Exporteer CSV",
+        "pdf": "Exporteer PDF"
+    },
+    "common": {
+        "cancel": "Annuleren"
+    }
+}

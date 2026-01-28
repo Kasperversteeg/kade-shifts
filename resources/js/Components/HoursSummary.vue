@@ -21,8 +21,8 @@ const monthName = computed(() => {
                 </svg>
             </div>
             <div class="stat-title">{{ monthName }}</div>
-            <div class="stat-value text-primary">{{ total }}h</div>
-            <div class="stat-desc">Total hours worked</div>
+            <div class="stat-value text-primary">{{ total }}{{ $t('summary.hoursUnit') }}</div>
+            <div class="stat-desc">{{ $t('summary.totalHours') }}</div>
         </div>
     </div>
 </template>

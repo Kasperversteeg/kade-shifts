@@ -1,0 +1,86 @@
+{
+    "nav": {
+        "dashboard": "Dashboard",
+        "myHours": "My Hours",
+        "admin": "Admin",
+        "profile": "Profile",
+        "preferences": "Preferences",
+        "logOut": "Log Out"
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "addHours": "Add Hours",
+        "addNewEntry": "+ Add New Entry",
+        "recentEntries": "Recent Entries",
+        "noEntries": "No entries yet. Add your first time entry above!",
+        "viewAll": "View All Entries"
+    },
+    "timeEntries": {
+        "title": "My Hours",
+        "allEntries": "All Entries",
+        "addEntry": "+ Add Entry",
+        "cancel": "Cancel",
+        "noEntries": "No entries for this month.",
+        "date": "Date",
+        "shiftStart": "Shift Start",
+        "shiftEnd": "Shift End",
+        "breakMinutes": "Break (minutes)",
+        "notes": "Notes (optional)",
+        "save": "Save Entry",
+        "saving": "Saving...",
+        "edit": "Edit Time Entry",
+        "update": "Update Entry",
+        "deleteConfirm": "Are you sure you want to delete this entry?",
+        "break": "{minutes}min break"
+    },
+    "admin": {
+        "overview": "Admin Overview",
+        "manageInvitations": "Manage Invitations",
+        "totalUsers": "Total Users",
+        "totalHours": "Total Hours",
+        "avgPerUser": "Average per User",
+        "userHours": "User Hours",
+        "emailReport": "Email Report",
+        "sending": "Sending...",
+        "name": "Name",
+        "email": "Email",
+        "entries": "Entries",
+        "total": "Total:",
+        "noUsersThisMonth": "No users with entries this month",
+        "back": "Back"
+    },
+    "invitations": {
+        "title": "Manage Invitations",
+        "sendInvite": "Send Invitation",
+        "emailPlaceholder": "Enter email address",
+        "send": "Send Invite",
+        "allInvitations": "All Invitations",
+        "status": "Status",
+        "invitedBy": "Invited By",
+        "date": "Date",
+        "pending": "Pending",
+        "expired": "Expired",
+        "accepted": "Accepted",
+        "noInvitations": "No invitations sent yet"
+    },
+    "preferences": {
+        "title": "Preferences",
+        "language": "Language",
+        "save": "Save Preferences",
+        "saved": "Preferences saved."
+    },
+    "month": {
+        "today": "Today"
+    },
+    "summary": {
+        "totalHours": "Total Hours",
+        "hoursUnit": "h"
+    },
+    "export": {
+        "csv": "Export CSV",
+        "pdf": "Export PDF"
+    },
+    "common": {
+        "cancel": "Cancel"
+    }
+}

@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreTimeEntryRequest extends FormRequest
+class UpdateTimeEntryRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -18,7 +18,9 @@ class StoreTimeEntryRequest extends FormRequest
             'date' => [
                 'required',
                 'date',
-                Rule::unique('time_entries')->where('user_id', $this->user()->id),
+                Rule::unique('time_entries')
+                    ->where('user_id', $this->user()->id)
+                    ->ignore($this->route('time_entry')),
             ],
             'shift_start' => 'required|date_format:H:i',
             'shift_end' => 'required|date_format:H:i',

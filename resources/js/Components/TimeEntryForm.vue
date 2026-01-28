@@ -1,7 +1,9 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import dayjs from 'dayjs';
 
+const { t } = useI18n();
 const emit = defineEmits(['cancel', 'success']);
 
 const form = useForm({
@@ -25,10 +27,9 @@ const submit = () => {
 <template>
     <form @submit.prevent="submit" class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Date -->
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Date</span>
+                    <span class="label-text">{{ t('timeEntries.date') }}</span>
                 </label>
                 <input
                     type="date"
@@ -41,10 +42,9 @@ const submit = () => {
                 </label>
             </div>
 
-            <!-- Shift Start -->
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Shift Start</span>
+                    <span class="label-text">{{ t('timeEntries.shiftStart') }}</span>
                 </label>
                 <input
                     type="time"
@@ -57,10 +57,9 @@ const submit = () => {
                 </label>
             </div>
 
-            <!-- Shift End -->
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Shift End</span>
+                    <span class="label-text">{{ t('timeEntries.shiftEnd') }}</span>
                 </label>
                 <input
                     type="time"
@@ -73,10 +72,9 @@ const submit = () => {
                 </label>
             </div>
 
-            <!-- Break Minutes -->
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Break (minutes)</span>
+                    <span class="label-text">{{ t('timeEntries.breakMinutes') }}</span>
                 </label>
                 <input
                     type="number"
@@ -91,10 +89,9 @@ const submit = () => {
             </div>
         </div>
 
-        <!-- Notes -->
         <div class="form-control">
             <label class="label">
-                <span class="label-text">Notes (optional)</span>
+                <span class="label-text">{{ t('timeEntries.notes') }}</span>
             </label>
             <textarea
                 v-model="form.notes"
@@ -104,13 +101,12 @@ const submit = () => {
             ></textarea>
         </div>
 
-        <!-- Actions -->
         <div class="flex gap-2 justify-end">
             <button type="button" @click="emit('cancel')" class="btn btn-ghost">
-                Cancel
+                {{ t('common.cancel') }}
             </button>
             <button type="submit" class="btn btn-primary" :disabled="form.processing">
-                {{ form.processing ? 'Saving...' : 'Save Entry' }}
+                {{ form.processing ? t('timeEntries.saving') : t('timeEntries.save') }}
             </button>
         </div>
     </form>

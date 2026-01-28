@@ -44,7 +44,7 @@ const goToCurrentMonth = () => {
                 @click="goToCurrentMonth"
                 class="btn btn-xs btn-outline"
             >
-                Today
+                {{ $t('month.today') }}
             </button>
         </div>
         <button @click="goToNextMonth" class="btn btn-circle btn-sm btn-ghost">

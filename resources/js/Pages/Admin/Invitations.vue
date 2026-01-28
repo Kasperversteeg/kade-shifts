@@ -1,7 +1,10 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import dayjs from 'dayjs';
+
+const { t } = useI18n();
 
 defineProps({
     invitations: Array,
@@ -18,9 +21,9 @@ const sendInvitation = () => {
 };
 
 const getStatus = (invitation) => {
-    if (invitation.accepted_at) return 'Accepted';
-    if (dayjs(invitation.expires_at).isBefore(dayjs())) return 'Expired';
-    return 'Pending';
+    if (invitation.accepted_at) return t('invitations.accepted');
+    if (dayjs(invitation.expires_at).isBefore(dayjs())) return t('invitations.expired');
+    return t('invitations.pending');
 };
 
 const getStatusClass = (invitation) => {
@@ -31,27 +34,26 @@ const getStatusClass = (invitation) => {
 </script>
 
 <template>
-    <Head title="Invitations" />
+    <Head :title="t('invitations.title')" />
 
     <AuthenticatedLayout>
         <div class="space-y-4">
             <div class="flex justify-between items-center">
-                <h1 class="text-2xl font-bold">User Invitations</h1>
+                <h1 class="text-2xl font-bold">{{ t('invitations.title') }}</h1>
                 <Link :href="route('admin.overview')" class="btn btn-outline btn-sm">
-                    Back to Overview
+                    {{ t('admin.back') }}
                 </Link>
             </div>
 
-            <!-- Send Invitation Form -->
             <div class="card bg-base-100 shadow-xl">
                 <div class="card-body">
-                    <h2 class="card-title">Send New Invitation</h2>
+                    <h2 class="card-title">{{ t('invitations.sendInvite') }}</h2>
                     <form @submit.prevent="sendInvitation" class="flex gap-2">
                         <div class="form-control flex-1">
                             <input
                                 type="email"
                                 v-model="form.email"
-                                placeholder="user@example.com"
+                                :placeholder="t('invitations.emailPlaceholder')"
                                 class="input input-bordered"
                                 :class="{ 'input-error': form.errors.email }"
                                 required
@@ -65,25 +67,24 @@ const getStatusClass = (invitation) => {
                             class="btn btn-primary"
                             :disabled="form.processing"
                         >
-                            {{ form.processing ? 'Sending...' : 'Send Invitation' }}
+                            {{ form.processing ? t('admin.sending') : t('invitations.send') }}
                         </button>
                     </form>
                 </div>
             </div>
 
-            <!-- Invitations List -->
             <div class="card bg-base-100 shadow-xl">
                 <div class="card-body">
-                    <h2 class="card-title">Sent Invitations</h2>
+                    <h2 class="card-title">{{ t('invitations.allInvitations') }}</h2>
 
                     <div class="overflow-x-auto">
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Email</th>
-                                    <th>Invited By</th>
-                                    <th>Status</th>
-                                    <th>Expires</th>
+                                    <th>{{ t('admin.email') }}</th>
+                                    <th>{{ t('invitations.invitedBy') }}</th>
+                                    <th>{{ t('invitations.status') }}</th>
+                                    <th>{{ t('invitations.date') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -99,7 +100,7 @@ const getStatusClass = (invitation) => {
                                 </tr>
                                 <tr v-if="invitations.length === 0">
                                     <td colspan="4" class="text-center opacity-60">
-                                        No invitations sent yet
+                                        {{ t('invitations.noInvitations') }}
                                     </td>
                                 </tr>
                             </tbody>
