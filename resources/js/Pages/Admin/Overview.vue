@@ -22,6 +22,7 @@ const sendReport = () => {
 </script>
 
 <template>
+
     <Head :title="t('admin.overview')" />
 
     <AuthenticatedLayout>
@@ -54,20 +55,18 @@ const sendReport = () => {
 
             <div class="card bg-base-100 shadow-xl">
                 <div class="card-body">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="card-title">{{ t('admin.userHours') }}</h2>
-                        <div class="flex gap-2">
-                            <a :href="route('admin.export-csv', { month: currentMonth })" class="btn btn-outline btn-sm">
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-4">
+                        <h2 class="card-title mb-2 md:mb-0">{{ t('admin.userHours') }}</h2>
+                        <div class="flex gap-2 flex-wrap">
+                            <a :href="route('admin.export-csv', { month: currentMonth })"
+                                class="btn btn-outline btn-sm">
                                 {{ t('export.csv') }}
                             </a>
-                            <a :href="route('admin.export-pdf', { month: currentMonth })" class="btn btn-outline btn-sm">
+                            <a :href="route('admin.export-pdf', { month: currentMonth })"
+                                class="btn btn-outline btn-sm">
                                 {{ t('export.pdf') }}
                             </a>
-                            <button
-                                @click="sendReport"
-                                class="btn btn-primary btn-sm"
-                                :disabled="form.processing"
-                            >
+                            <button @click="sendReport" class="btn btn-primary btn-sm" :disabled="form.processing">
                                 {{ form.processing ? t('admin.sending') : t('admin.emailReport') }}
                             </button>
                         </div>
@@ -86,14 +85,16 @@ const sendReport = () => {
                             <tbody>
                                 <tr v-for="user in users" :key="user.id">
                                     <td>
-                                        <Link :href="route('admin.user-detail', user.id)" class="link link-hover link-primary">
+                                        <Link :href="route('admin.user-detail', user.id)"
+                                            class="link link-hover link-primary">
                                             {{ user.name }}
                                         </Link>
                                     </td>
                                     <td>{{ user.email }}</td>
                                     <td class="text-right">{{ user.entries_count }}</td>
                                     <td class="text-right">
-                                        <span class="badge badge-primary">{{ user.total_hours }}{{ t('summary.hoursUnit') }}</span>
+                                        <span class="badge badge-primary">{{ user.total_hours }}{{
+                                            t('summary.hoursUnit') }}</span>
                                     </td>
                                 </tr>
                                 <tr v-if="users.length === 0">

@@ -1,5 +1,99 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/forms";
 @plugin "daisyui" {
-    themes: light --default, dark;
+    themes: kade --default, kade-dark --prefersdark;
+}
+
+@theme {
+    --color-k-sand: #f5f2e3;
+    --color-k-orange-light: #f2d9b2;
+    --color-k-orange: #d6992b;
+    --color-k-orange-dark: #d6992b;
+    --color-k-black: #2c2926;
+    --color-k-blue-light: #bad1ce;
+    --color-k-blue: #9aaeab;
+    --color-k-blue-dark: #253844;
+    --color-k-green-light: #819650;
+    --color-k-green: #4d5930;
+    --color-k-green-dark: #4d5930;
+}
+
+@layer base {
+    html, body {
+        overscroll-behavior: none;
+    }
+
+    .input, .textarea, .select {
+        background-color: #fdfcf7 !important;
+    }
+
+    [data-theme="kade-dark"] .input,
+    [data-theme="kade-dark"] .textarea,
+    [data-theme="kade-dark"] .select {
+        background-color: #363230 !important;
+    }
+}
+
+@plugin "daisyui/theme" {
+    name: "kade";
+    default: true;
+    prefersdark: false;
+    color-scheme: light;
+    --color-base-100: #f5f2e3;
+    --color-base-200: #faf8f0;
+    --color-base-300: #e2ddc9;
+    --color-base-content: #2c2926;
+    --color-primary: #4d5930;
+    --color-primary-content: #f5f2e3;
+    --color-secondary: #253844;
+    --color-secondary-content: #f5f2e3;
+    --color-accent: #d6992b;
+    --color-accent-content: #2c2926;
+    --color-neutral: #2c2926;
+    --color-neutral-content: #f5f2e3;
+    --color-info: #9aaeab;
+    --color-info-content: #253844;
+    --color-success: #819650;
+    --color-success-content: #f5f2e3;
+    --color-warning: #d6992b;
+    --color-warning-content: #2c2926;
+    --color-error: #b91c1c;
+    --color-error-content: #f5f2e3;
+    --radius-selector: 2rem;
+    --radius-field: 0.5rem;
+    --radius-box: 1rem;
+    --radius-btn: 0.5rem;
+    --radius-badge: 2rem;
+}
+
+@plugin "daisyui/theme" {
+    name: "kade-dark";
+    default: false;
+    prefersdark: true;
+    color-scheme: dark;
+    --color-base-100: #2c2926;
+    --color-base-200: #23201e;
+    --color-base-300: #1a1816;
+    --color-base-content: #f5f2e3;
+    --color-primary: #819650;
+    --color-primary-content: #f5f2e3;
+    --color-secondary: #9aaeab;
+    --color-secondary-content: #1a1816;
+    --color-accent: #d6992b;
+    --color-accent-content: #2c2926;
+    --color-neutral: #f5f2e3;
+    --color-neutral-content: #2c2926;
+    --color-info: #bad1ce;
+    --color-info-content: #1a1816;
+    --color-success: #819650;
+    --color-success-content: #f5f2e3;
+    --color-warning: #d6992b;
+    --color-warning-content: #2c2926;
+    --color-error: #ef4444;
+    --color-error-content: #f5f2e3;
+    --radius-selector: 2rem;
+    --radius-field: 0.5rem;
+    --radius-box: 1rem;
+    --radius-btn: 0.5rem;
+    --radius-badge: 2rem;
 }

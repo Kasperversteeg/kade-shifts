@@ -492,8 +492,7 @@ DaisyUI themes are already configured in `resources/css/app.css` (light default 
 - Migration + model update
 - Admin UI: approve/reject buttons per entry in `Admin/UserDetail.vue`
 - User UI: show status badge on each entry in `TimeEntries/Index.vue`
-- Optional: bulk approve for a month
-- Notification: email user when entry is approved/rejected
+- Admin UI: bulk approve for a month
 
 #### 3.2 Hourly Rate Calculations
 
@@ -513,7 +512,6 @@ DaisyUI themes are already configured in `resources/css/app.css` (light default 
 
 - Evaluate Capacitor.js wrapper around the existing PWA
 - Configure native build for iOS and Android
-- Add push notification support via Firebase/APNs
 
 ---
 
@@ -553,7 +551,6 @@ DaisyUI themes are already configured in `resources/css/app.css` (light default 
 - [ ] user can only have one time entry per day
 - [ ] OAuth login (Google)
 - [ ] Export to CSV/PDF
-- [ ] Multiple time zones support
 - [ ] Dark mode
 - [ ] User preferences
 - [ ] Multingual, user can set language from preferences
@@ -562,11 +559,15 @@ DaisyUI themes are already configured in `resources/css/app.css` (light default 
 ### Phase 3 Features
 
 - [ ] Shift approval workflow (by admins)
+- [ ] Approval view for admins only, admins should be able to approve or decline here
+- [ ] Approval
 - [ ] Hourly rate calculations
 - [ ] Automatic monthly email reports (scheduled)
-- [ ]
-- [ ]
-- [ ] Mobile native app
+
+### Phase 4 Features
+
+- [ ] User management, add e-mail address, iban, hourly rate, contract start and end date
+- [ ] admin planning tool, can add shifts and assign them to a user.
 
 ---
 
