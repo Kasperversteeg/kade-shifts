@@ -38,7 +38,7 @@ class TimeEntry extends Model
             $end->addDay();
         }
 
-        $totalMinutes = $end->diffInMinutes($start);
+        $totalMinutes = $start->diffInMinutes($end, false);
         $workMinutes = $totalMinutes - $breakMinutes;
 
         return round($workMinutes / 60, 2);
