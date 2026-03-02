@@ -6,7 +6,9 @@ admin maakt gebruiker aan > e-mail versturen met link naar app > gebruiker voert
 
 ## Features
 
-### Gebruikers:
+De huidige app zal twee delen bevatten, een gebruiker/werknemer kant waarbij deze uren in kan vullen en verwachte loon/ huidige contract gegevens kan inzien. De Admin/werkgever zal een complete HR dashboard hebben met een werknemer overzicht/ plannings tool/ uren accoordatie flow/
+
+### Gebruikers/werknemers:
 
 - Dashboard
     - uren invoeren
@@ -14,10 +16,23 @@ admin maakt gebruiker aan > e-mail versturen met link naar app > gebruiker voert
     - loon
 - Gewerkte uren overzicht
     - per maand overzicht
-    -
 
-### Admin gedeelte:
+### Admin gedeelte/werkgever:
 
 - Collega's/Gebruikers overzicht
     - uurtarief/ in dienst vanaf/
-- Uren overzicht per maand
+- Gewerkte Uren overzicht per maand
+    - exporteer naar csv (of kopier naar clipboard?)
+- Acoorderen flow scherm
+    - Gewerkte uren acoorderen
+- plan module
+    - weekoverzicht
+    - werknemers in plannen -> drag and drop horizontal flow
+
+## RULES
+
+- Use spatie permissions for all controllers, there should be no permission bugs
+- Responsive, work on both mobile and desktop
+- No hour entity should be hard deleted
+- No user entity should be hard deleted
+- Seeders schrijven voor handmatige tests
