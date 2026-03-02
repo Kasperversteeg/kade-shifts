@@ -22,6 +22,7 @@ const editingEntry = ref(null);
 </script>
 
 <template>
+
     <Head :title="t('timeEntries.title')" />
 
     <AuthenticatedLayout>
@@ -32,46 +33,33 @@ const editingEntry = ref(null);
 
             <div class="card bg-base-100 shadow-xl">
                 <div class="card-body">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="card-title">{{ t('timeEntries.allEntries') }}</h2>
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-4">
+                        <h2 class="card-title mb-2 md:mb-0">{{ t('timeEntries.allEntries') }}</h2>
                         <div class="flex gap-2">
-                            <a :href="route('time-entries.export', { month: currentMonth })" class="btn btn-outline btn-sm">
+                            <a :href="route('time-entries.export', { month: currentMonth })"
+                                class="btn btn-outline btn-sm">
                                 {{ t('export.csv') }}
                             </a>
-                            <button
-                                @click="showForm = !showForm"
-                                class="btn btn-primary btn-sm"
-                            >
+                            <button @click="showForm = !showForm" class="btn btn-primary btn-sm">
                                 {{ showForm ? t('common.cancel') : t('timeEntries.addEntry') }}
                             </button>
                         </div>
                     </div>
 
                     <div v-if="showForm" class="mb-4 p-4 bg-base-200 rounded-lg">
-                        <TimeEntryForm
-                            @cancel="showForm = false"
-                            @success="showForm = false"
-                        />
+                        <TimeEntryForm @cancel="showForm = false" @success="showForm = false" />
                     </div>
 
                     <div v-if="entries.length === 0" class="text-center py-8 opacity-60">
                         {{ t('timeEntries.noEntries') }}
                     </div>
                     <div v-else class="space-y-2">
-                        <TimeEntryCard
-                            v-for="entry in entries"
-                            :key="entry.id"
-                            :entry="entry"
-                            @edit="editingEntry = $event"
-                        />
+                        <TimeEntryCard v-for="entry in entries" :key="entry.id" :entry="entry"
+                            @edit="editingEntry = $event" />
                     </div>
                 </div>
             </div>
         </div>
-        <EditTimeEntryModal
-            :entry="editingEntry"
-            :show="!!editingEntry"
-            @close="editingEntry = null"
-        />
+        <EditTimeEntryModal :entry="editingEntry" :show="!!editingEntry" @close="editingEntry = null" />
     </AuthenticatedLayout>
 </template>

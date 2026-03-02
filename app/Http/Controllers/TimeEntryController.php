@@ -7,7 +7,6 @@ use App\Http\Requests\UpdateTimeEntryRequest;
 use App\Models\TimeEntry;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Inertia\Inertia;
 
 class TimeEntryController extends Controller
@@ -52,7 +51,7 @@ class TimeEntryController extends Controller
             'notes' => $validated['notes'] ?? null,
         ]);
 
-        return redirect()->back()->with('success', 'Time entry added successfully!');
+        return redirect()->back()->with('success', __('Time entry added successfully!'));
     }
 
     public function update(UpdateTimeEntryRequest $request, TimeEntry $timeEntry)
@@ -78,7 +77,7 @@ class TimeEntryController extends Controller
             'notes' => $validated['notes'] ?? null,
         ]);
 
-        return redirect()->back()->with('success', 'Time entry updated successfully!');
+        return redirect()->back()->with('success', __('Time entry added successfully!'));
     }
 
     public function exportCsv(Request $request)

@@ -24,7 +24,7 @@ const form = useForm({
 
 watch(() => props.show, (val) => {
     if (val && props.entry) {
-        form.date = props.entry.date;
+        form.date = props.entry.date?.substring(0, 10);
         form.shift_start = props.entry.shift_start?.substring(0, 5);
         form.shift_end = props.entry.shift_end?.substring(0, 5);
         form.break_minutes = props.entry.break_minutes;
@@ -60,12 +60,8 @@ const cancel = () => {
                         <label class="label">
                             <span class="label-text">{{ t('timeEntries.date') }}</span>
                         </label>
-                        <input
-                            type="date"
-                            v-model="form.date"
-                            class="input input-bordered"
-                            :class="{ 'input-error': form.errors.date }"
-                        />
+                        <input type="date" v-model="form.date" class="input input-bordered"
+                            :class="{ 'input-error': form.errors.date }" />
                         <label v-if="form.errors.date" class="label">
                             <span class="label-text-alt text-error">{{ form.errors.date }}</span>
                         </label>
@@ -75,12 +71,8 @@ const cancel = () => {
                         <label class="label">
                             <span class="label-text">{{ t('timeEntries.shiftStart') }}</span>
                         </label>
-                        <input
-                            type="time"
-                            v-model="form.shift_start"
-                            class="input input-bordered"
-                            :class="{ 'input-error': form.errors.shift_start }"
-                        />
+                        <input type="time" step="900" v-model="form.shift_start" class="input input-bordered"
+                            :class="{ 'input-error': form.errors.shift_start }" />
                         <label v-if="form.errors.shift_start" class="label">
                             <span class="label-text-alt text-error">{{ form.errors.shift_start }}</span>
                         </label>
@@ -90,12 +82,8 @@ const cancel = () => {
                         <label class="label">
                             <span class="label-text">{{ t('timeEntries.shiftEnd') }}</span>
                         </label>
-                        <input
-                            type="time"
-                            v-model="form.shift_end"
-                            class="input input-bordered"
-                            :class="{ 'input-error': form.errors.shift_end }"
-                        />
+                        <input type="time" v-model="form.shift_end" class="input input-bordered"
+                            :class="{ 'input-error': form.errors.shift_end }" />
                         <label v-if="form.errors.shift_end" class="label">
                             <span class="label-text-alt text-error">{{ form.errors.shift_end }}</span>
                         </label>
@@ -105,31 +93,21 @@ const cancel = () => {
                         <label class="label">
                             <span class="label-text">{{ t('timeEntries.breakMinutes') }}</span>
                         </label>
-                        <input
-                            type="number"
-                            v-model.number="form.break_minutes"
-                            min="0"
-                            class="input input-bordered"
-                            :class="{ 'input-error': form.errors.break_minutes }"
-                        />
+                        <input type="number" v-model.number="form.break_minutes" min="0" class="input input-bordered"
+                            :class="{ 'input-error': form.errors.break_minutes }" />
                         <label v-if="form.errors.break_minutes" class="label">
                             <span class="label-text-alt text-error">{{ form.errors.break_minutes }}</span>
                         </label>
                     </div>
-                </div>
 
-                <div class="form-control">
-                    <label class="label">
-                        <span class="label-text">{{ t('timeEntries.notes') }}</span>
-                    </label>
-                    <textarea
-                        v-model="form.notes"
-                        class="textarea textarea-bordered"
-                        :class="{ 'textarea-error': form.errors.notes }"
-                        rows="2"
-                    ></textarea>
+                    <div class="form-control md:col-span-2">
+                        <label class="label">
+                            <span class="label-text">{{ t('timeEntries.notes') }}</span>
+                        </label>
+                        <textarea v-model="form.notes" class="textarea textarea-bordered"
+                            :class="{ 'textarea-error': form.errors.notes }" rows="2"></textarea>
+                    </div>
                 </div>
-
                 <div class="modal-action">
                     <button type="button" @click="cancel" class="btn btn-ghost">{{ t('common.cancel') }}</button>
                     <button type="submit" class="btn btn-primary" :disabled="form.processing">
