@@ -23,6 +23,7 @@ De huidige app zal twee delen bevatten, een gebruiker/werknemer kant waarbij dez
 
 - Collega's/Gebruikers overzicht
     - uurtarief/ in dienst vanaf/
+    - dossier per collega waarbij bestanden geupload kunnen worden
 - Gewerkte Uren overzicht per maand
     - exporteer naar csv (of kopier naar clipboard?)
 - Acoorderen flow scherm
