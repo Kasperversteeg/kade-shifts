@@ -21,6 +21,9 @@
         "vite-plugin-pwa": "^1.2.0",
         "vue": "^3.4.0"
     },
+    "overrides": {
+        "serialize-javascript": "^7.0.3"
+    },
     "dependencies": {
         "dayjs": "^1.11.19",
         "vue-i18n": "^11.2.8"
