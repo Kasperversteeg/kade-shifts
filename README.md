@@ -4,6 +4,8 @@
 
 admin maakt gebruiker aan > e-mail versturen met link naar app > gebruiker voert aanvullende gegevens in > zodra alle benodigde info aanwezig is (zoals contract soort, uurtarief, geboorte datum, volledige naam, start datum) wordt er op basis van een template een contract aangemaakt. > Contract wordt opgeslagen als docx bestand en kan gedownload/geprint worden > getekende contract wordt ge-upload en beschikbaar voor zowel admin als desbetreffende gebruiker.
 
+werknemer vult start, pauze en eindtijd per dag in > accoordeer flow wordt getriggered > eind van de maand acoordeert de werkgever uren en krijgt een overzicht van de uren per maand > kan uren totalen van alle werknemers downloaden
+
 ## Features
 
 De huidige app zal twee delen bevatten, een gebruiker/werknemer kant waarbij deze uren in kan vullen en verwachte loon/ huidige contract gegevens kan inzien. De Admin/werkgever zal een complete HR dashboard hebben met een werknemer overzicht/ plannings tool/ uren accoordatie flow/
@@ -13,7 +15,7 @@ De huidige app zal twee delen bevatten, een gebruiker/werknemer kant waarbij dez
 - Dashboard
     - uren invoeren
     - uur tarief zien
-    - loon
+    - potentieel loon
 - Gewerkte uren overzicht
     - per maand overzicht
 
@@ -36,3 +38,4 @@ De huidige app zal twee delen bevatten, een gebruiker/werknemer kant waarbij dez
 - No hour entity should be hard deleted
 - No user entity should be hard deleted
 - Seeders schrijven voor handmatige tests
+- workflow voor uren model
