@@ -1,10 +1,20 @@
-<script setup>
+<script setup lang="ts">
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 
-const props = defineProps({
-    invitation: Object,
-});
+const { t } = useI18n();
+
+interface InvitationData {
+    email: string;
+    token: string;
+}
+
+interface Props {
+    invitation: InvitationData;
+}
+
+const props = defineProps<Props>();
 
 const form = useForm({
     name: '',
@@ -12,7 +22,7 @@ const form = useForm({
     password_confirmation: '',
 });
 
-const submit = () => {
+const submit = (): void => {
     form.post(route('invitation.complete', props.invitation.token), {
         onFinish: () => form.reset('password', 'password_confirmation'),
     });
@@ -21,17 +31,17 @@ const submit = () => {
 
 <template>
     <GuestLayout>
-        <Head title="Accept Invitation" />
+        <Head :title="t('auth.acceptInvitation')" />
 
-        <h2 class="text-xl font-bold text-center mb-4">Welcome!</h2>
+        <h2 class="text-xl font-bold text-center mb-4">{{ t('auth.welcome') }}</h2>
         <p class="text-sm text-center opacity-60 mb-6">
-            Complete your registration for <strong>{{ invitation.email }}</strong>
+            {{ t('auth.completeRegistration') }} <strong>{{ invitation.email }}</strong>
         </p>
 
         <form @submit.prevent="submit" class="space-y-4">
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Name</span>
+                    <span class="label-text">{{ t('auth.name') }}</span>
                 </label>
                 <input
                     type="text"
@@ -48,7 +58,7 @@ const submit = () => {
 
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Password</span>
+                    <span class="label-text">{{ t('auth.password') }}</span>
                 </label>
                 <input
                     type="password"
@@ -64,7 +74,7 @@ const submit = () => {
 
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Confirm Password</span>
+                    <span class="label-text">{{ t('auth.confirmPassword') }}</span>
                 </label>
                 <input
                     type="password"
@@ -79,7 +89,7 @@ const submit = () => {
                 class="btn btn-primary w-full"
                 :disabled="form.processing"
             >
-                {{ form.processing ? 'Creating account...' : 'Create Account' }}
+                {{ form.processing ? t('auth.creatingAccount') : t('auth.createAccount') }}
             </button>
         </form>
     </GuestLayout>

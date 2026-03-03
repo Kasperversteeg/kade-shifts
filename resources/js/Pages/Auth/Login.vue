@@ -1,20 +1,16 @@
-<script setup>
-import Checkbox from '@/Components/Checkbox.vue';
+<script setup lang="ts">
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 
-defineProps({
-    canResetPassword: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
-});
+const { t } = useI18n();
+
+interface Props {
+    canResetPassword: boolean;
+    status?: string;
+}
+
+defineProps<Props>();
 
 const form = useForm({
     email: '',
@@ -22,7 +18,7 @@ const form = useForm({
     remember: false,
 });
 
-const submit = () => {
+const submit = (): void => {
     form.post(route('login'), {
         onFinish: () => form.reset('password'),
     });
@@ -31,69 +27,77 @@ const submit = () => {
 
 <template>
     <GuestLayout>
-        <Head title="Log in" />
+        <Head :title="t('auth.login')" />
 
-        <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
-            {{ status }}
+        <div v-if="status" class="alert alert-success mb-4">
+            <span class="text-sm">{{ status }}</span>
         </div>
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
-
-                <TextInput
+        <form @submit.prevent="submit" class="space-y-4">
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">{{ t('auth.email') }}</span>
+                </label>
+                <input
                     id="email"
                     type="email"
-                    class="mt-1 block w-full"
                     v-model="form.email"
+                    class="input input-bordered"
+                    :class="{ 'input-error': form.errors.email }"
                     required
                     autofocus
                     autocomplete="username"
                 />
-
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password"
-                    required
-                    autocomplete="current-password"
-                />
-
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <div class="mt-4 block">
-                <label class="flex items-center">
-                    <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ms-2 text-sm text-gray-600"
-                        >Remember me</span
-                    >
+                <label v-if="form.errors.email" class="label">
+                    <span class="label-text-alt text-error">{{ form.errors.email }}</span>
                 </label>
             </div>
 
-            <div class="mt-4 flex items-center justify-end">
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">{{ t('auth.password') }}</span>
+                </label>
+                <input
+                    id="password"
+                    type="password"
+                    v-model="form.password"
+                    class="input input-bordered"
+                    :class="{ 'input-error': form.errors.password }"
+                    required
+                    autocomplete="current-password"
+                />
+                <label v-if="form.errors.password" class="label">
+                    <span class="label-text-alt text-error">{{ form.errors.password }}</span>
+                </label>
+            </div>
+
+            <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-2">
+                    <input
+                        type="checkbox"
+                        v-model="form.remember"
+                        class="checkbox checkbox-sm"
+                    />
+                    <span class="label-text">{{ t('auth.rememberMe') }}</span>
+                </label>
+            </div>
+
+            <div class="flex items-center justify-between">
                 <Link
                     v-if="canResetPassword"
                     :href="route('password.request')"
-                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    class="link link-hover text-sm"
                 >
-                    Forgot your password?
+                    {{ t('auth.forgotPassword') }}
                 </Link>
 
-                <PrimaryButton
-                    class="ms-4"
-                    :class="{ 'opacity-25': form.processing }"
+                <button
+                    type="submit"
+                    class="btn btn-primary"
                     :disabled="form.processing"
                 >
-                    Log in
-                </PrimaryButton>
+                    {{ t('auth.loginButton') }}
+                </button>
             </div>
         </form>
 
@@ -103,7 +107,7 @@ const submit = () => {
                     <div class="w-full border-t border-base-300"></div>
                 </div>
                 <div class="relative flex justify-center text-sm">
-                    <span class="bg-base-100 px-2 text-base-content/60">Or</span>
+                    <span class="bg-base-100 px-2 text-base-content/60">{{ t('auth.or') }}</span>
                 </div>
             </div>
 
@@ -114,7 +118,7 @@ const submit = () => {
                     <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                     <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                 </svg>
-                Login with Google
+                {{ t('auth.loginWithGoogle') }}
             </a>
         </div>
     </GuestLayout>
