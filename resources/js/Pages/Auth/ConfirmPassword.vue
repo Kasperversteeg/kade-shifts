@@ -25,24 +25,20 @@ const submit = (): void => {
         </div>
 
         <form @submit.prevent="submit" class="space-y-4">
-            <div class="form-control">
-                <label class="label">
-                    <span class="label-text">{{ t('auth.password') }}</span>
-                </label>
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ t('auth.password') }}</legend>
                 <input
                     id="password"
                     type="password"
                     v-model="form.password"
-                    class="input input-bordered"
+                    class="input w-full"
                     :class="{ 'input-error': form.errors.password }"
                     required
                     autocomplete="current-password"
                     autofocus
                 />
-                <label v-if="form.errors.password" class="label">
-                    <span class="label-text-alt text-error">{{ form.errors.password }}</span>
-                </label>
-            </div>
+                <p v-if="form.errors.password" class="label text-error">{{ form.errors.password }}</p>
+            </fieldset>
 
             <div class="flex justify-end">
                 <button

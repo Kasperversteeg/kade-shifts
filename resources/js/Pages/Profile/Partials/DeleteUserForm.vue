@@ -67,24 +67,20 @@ const closeModal = (): void => {
                     {{ t('profile.deleteAccountConfirmDescription') }}
                 </p>
 
-                <div class="form-control mt-4">
-                    <label class="label">
-                        <span class="label-text">{{ t('auth.password') }}</span>
-                    </label>
+                <fieldset class="fieldset mt-4">
+                    <legend class="fieldset-legend">{{ t('auth.password') }}</legend>
                     <input
                         id="password"
                         ref="passwordInput"
                         type="password"
                         v-model="form.password"
-                        class="input input-bordered"
+                        class="input w-full"
                         :class="{ 'input-error': form.errors.password }"
                         :placeholder="t('auth.password')"
                         @keyup.enter="deleteUser"
                     />
-                    <label v-if="form.errors.password" class="label">
-                        <span class="label-text-alt text-error">{{ form.errors.password }}</span>
-                    </label>
-                </div>
+                    <p v-if="form.errors.password" class="label text-error">{{ form.errors.password }}</p>
+                </fieldset>
 
                 <div class="modal-action">
                     <button class="btn btn-ghost" @click="closeModal">

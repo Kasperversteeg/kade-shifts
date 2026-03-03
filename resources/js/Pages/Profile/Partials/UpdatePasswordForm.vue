@@ -44,58 +44,46 @@ const updatePassword = (): void => {
         </header>
 
         <form @submit.prevent="updatePassword" class="mt-6 space-y-4">
-            <div class="form-control">
-                <label class="label">
-                    <span class="label-text">{{ t('profile.currentPassword') }}</span>
-                </label>
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ t('profile.currentPassword') }}</legend>
                 <input
                     id="current_password"
                     ref="currentPasswordInput"
                     type="password"
                     v-model="form.current_password"
-                    class="input input-bordered"
+                    class="input w-full"
                     :class="{ 'input-error': form.errors.current_password }"
                     autocomplete="current-password"
                 />
-                <label v-if="form.errors.current_password" class="label">
-                    <span class="label-text-alt text-error">{{ form.errors.current_password }}</span>
-                </label>
-            </div>
+                <p v-if="form.errors.current_password" class="label text-error">{{ form.errors.current_password }}</p>
+            </fieldset>
 
-            <div class="form-control">
-                <label class="label">
-                    <span class="label-text">{{ t('profile.newPassword') }}</span>
-                </label>
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ t('profile.newPassword') }}</legend>
                 <input
                     id="password"
                     ref="passwordInput"
                     type="password"
                     v-model="form.password"
-                    class="input input-bordered"
+                    class="input w-full"
                     :class="{ 'input-error': form.errors.password }"
                     autocomplete="new-password"
                 />
-                <label v-if="form.errors.password" class="label">
-                    <span class="label-text-alt text-error">{{ form.errors.password }}</span>
-                </label>
-            </div>
+                <p v-if="form.errors.password" class="label text-error">{{ form.errors.password }}</p>
+            </fieldset>
 
-            <div class="form-control">
-                <label class="label">
-                    <span class="label-text">{{ t('auth.confirmPassword') }}</span>
-                </label>
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ t('auth.confirmPassword') }}</legend>
                 <input
                     id="password_confirmation"
                     type="password"
                     v-model="form.password_confirmation"
-                    class="input input-bordered"
+                    class="input w-full"
                     :class="{ 'input-error': form.errors.password_confirmation }"
                     autocomplete="new-password"
                 />
-                <label v-if="form.errors.password_confirmation" class="label">
-                    <span class="label-text-alt text-error">{{ form.errors.password_confirmation }}</span>
-                </label>
-            </div>
+                <p v-if="form.errors.password_confirmation" class="label text-error">{{ form.errors.password_confirmation }}</p>
+            </fieldset>
 
             <div class="flex items-center gap-4">
                 <button type="submit" class="btn btn-primary" :disabled="form.processing">

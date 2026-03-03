@@ -62,57 +62,39 @@ const cancel = (): void => {
 
             <form @submit.prevent="submit" class="space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text">{{ t('timeEntries.date') }}</span>
-                        </label>
-                        <input type="date" v-model="form.date" class="input input-bordered"
+                    <fieldset class="fieldset">
+                        <legend class="fieldset-legend">{{ t('timeEntries.date') }}</legend>
+                        <input type="date" v-model="form.date" class="input w-full"
                             :class="{ 'input-error': form.errors.date }" />
-                        <label v-if="form.errors.date" class="label">
-                            <span class="label-text-alt text-error">{{ form.errors.date }}</span>
-                        </label>
-                    </div>
+                        <p v-if="form.errors.date" class="label text-error">{{ form.errors.date }}</p>
+                    </fieldset>
 
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text">{{ t('timeEntries.shiftStart') }}</span>
-                        </label>
-                        <input type="time" step="900" v-model="form.shift_start" class="input input-bordered"
+                    <fieldset class="fieldset">
+                        <legend class="fieldset-legend">{{ t('timeEntries.shiftStart') }}</legend>
+                        <input type="time" step="900" v-model="form.shift_start" class="input w-full"
                             :class="{ 'input-error': form.errors.shift_start }" />
-                        <label v-if="form.errors.shift_start" class="label">
-                            <span class="label-text-alt text-error">{{ form.errors.shift_start }}</span>
-                        </label>
-                    </div>
+                        <p v-if="form.errors.shift_start" class="label text-error">{{ form.errors.shift_start }}</p>
+                    </fieldset>
 
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text">{{ t('timeEntries.shiftEnd') }}</span>
-                        </label>
-                        <input type="time" v-model="form.shift_end" class="input input-bordered"
+                    <fieldset class="fieldset">
+                        <legend class="fieldset-legend">{{ t('timeEntries.shiftEnd') }}</legend>
+                        <input type="time" v-model="form.shift_end" class="input w-full"
                             :class="{ 'input-error': form.errors.shift_end }" />
-                        <label v-if="form.errors.shift_end" class="label">
-                            <span class="label-text-alt text-error">{{ form.errors.shift_end }}</span>
-                        </label>
-                    </div>
+                        <p v-if="form.errors.shift_end" class="label text-error">{{ form.errors.shift_end }}</p>
+                    </fieldset>
 
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text">{{ t('timeEntries.breakMinutes') }}</span>
-                        </label>
-                        <input type="number" v-model.number="form.break_minutes" min="0" class="input input-bordered"
+                    <fieldset class="fieldset">
+                        <legend class="fieldset-legend">{{ t('timeEntries.breakMinutes') }}</legend>
+                        <input type="number" v-model.number="form.break_minutes" min="0" class="input w-full"
                             :class="{ 'input-error': form.errors.break_minutes }" />
-                        <label v-if="form.errors.break_minutes" class="label">
-                            <span class="label-text-alt text-error">{{ form.errors.break_minutes }}</span>
-                        </label>
-                    </div>
+                        <p v-if="form.errors.break_minutes" class="label text-error">{{ form.errors.break_minutes }}</p>
+                    </fieldset>
 
-                    <div class="form-control md:col-span-2">
-                        <label class="label">
-                            <span class="label-text">{{ t('timeEntries.notes') }}</span>
-                        </label>
-                        <textarea v-model="form.notes" class="textarea textarea-bordered"
+                    <fieldset class="fieldset md:col-span-2">
+                        <legend class="fieldset-legend">{{ t('timeEntries.notes') }}</legend>
+                        <textarea v-model="form.notes" class="textarea w-full"
                             :class="{ 'textarea-error': form.errors.notes }" rows="2"></textarea>
-                    </div>
+                    </fieldset>
                 </div>
                 <div class="modal-action">
                     <button type="button" @click="cancel" class="btn btn-ghost">{{ t('common.cancel') }}</button>
