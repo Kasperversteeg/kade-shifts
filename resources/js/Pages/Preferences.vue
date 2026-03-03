@@ -1,20 +1,22 @@
-<script setup>
+<script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
-import { useForm } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
+import type { UserPreferences } from '@/types';
 
 const { t, locale } = useI18n();
 
-const props = defineProps({
-    preferences: Object,
-});
+interface Props {
+    preferences: UserPreferences;
+}
+
+const props = defineProps<Props>();
 
 const form = useForm({
     language: props.preferences?.language || 'en',
 });
 
-const submit = () => {
+const submit = (): void => {
     form.patch(route('preferences.update'), {
         onSuccess: () => {
             locale.value = form.language;

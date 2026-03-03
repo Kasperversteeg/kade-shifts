@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import TimeEntryForm from '@/Components/TimeEntryForm.vue';
 import TimeEntryCard from '@/Components/TimeEntryCard.vue';
@@ -7,17 +7,20 @@ import HoursSummary from '@/Components/HoursSummary.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
+import type { TimeEntry } from '@/types';
 
 const { t } = useI18n();
 
-defineProps({
-    entries: Array,
-    monthTotal: Number,
-    currentMonth: String,
-});
+interface Props {
+    entries: TimeEntry[];
+    monthTotal: number;
+    currentMonth: string;
+}
 
-const showForm = ref(false);
-const editingEntry = ref(null);
+defineProps<Props>();
+
+const showForm = ref<boolean>(false);
+const editingEntry = ref<TimeEntry | null>(null);
 </script>
 
 <template>
