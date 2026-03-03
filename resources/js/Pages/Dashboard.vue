@@ -7,7 +7,8 @@ import HoursSummary from '@/Components/HoursSummary.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
-import type { TimeEntry } from '@/types';
+import type { TimeEntry, Shift } from '@/types';
+import dayjs from 'dayjs';
 
 const { t } = useI18n();
 
@@ -15,6 +16,7 @@ interface Props {
     entries: TimeEntry[];
     monthTotal: number;
     currentMonth: string;
+    nextShift: Pick<Shift, 'id' | 'date' | 'start_time' | 'end_time' | 'position' | 'planned_hours'> | null;
 }
 
 defineProps<Props>();
@@ -28,6 +30,25 @@ const editingEntry = ref<TimeEntry | null>(null);
 
     <AuthenticatedLayout>
         <div class="grid gap-4">
+            <!-- Next Shift Card -->
+            <div v-if="nextShift" class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title">{{ t('schedule.nextShift') }}</h2>
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="font-semibold">{{ dayjs(nextShift.date).format('ddd, MMM D') }}</p>
+                            <p>{{ nextShift.start_time }} — {{ nextShift.end_time }}
+                                <span class="text-sm opacity-70">({{ nextShift.planned_hours }}{{ t('summary.hoursUnit') }})</span>
+                            </p>
+                            <p v-if="nextShift.position" class="text-sm opacity-70">{{ nextShift.position }}</p>
+                        </div>
+                        <Link :href="route('schedule.index')" class="btn btn-outline btn-sm">
+                            {{ t('schedule.mySchedule') }}
+                        </Link>
+                    </div>
+                </div>
+            </div>
+
             <HoursSummary :total="monthTotal" :month="currentMonth" />
 
             <div class="card bg-base-100 shadow-xl">

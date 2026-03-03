@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
-import { ref, watch } from 'vue';
-import type { TimeEntry } from '@/types';
+import { ref, watch, computed } from 'vue';
+import type { TimeEntry, AtwWarning } from '@/types';
 
 const { t } = useI18n();
 
@@ -53,6 +53,34 @@ const cancel = (): void => {
     form.clearErrors();
     emit('close');
 };
+
+const shiftDurationHours = computed<number>(() => {
+    if (!form.shift_start || !form.shift_end) return 0;
+    const [sh, sm] = form.shift_start.split(':').map(Number);
+    const [eh, em] = form.shift_end.split(':').map(Number);
+    let startMin = sh * 60 + sm;
+    let endMin = eh * 60 + em;
+    if (endMin <= startMin) endMin += 24 * 60;
+    return (endMin - startMin) / 60;
+});
+
+const atwWarnings = computed<AtwWarning[]>(() => {
+    const warnings: AtwWarning[] = [];
+    const hours = shiftDurationHours.value;
+    const breakMin = form.break_minutes || 0;
+
+    if (hours > 5.5 && breakMin < 30) {
+        warnings.push({ type: 'break_short', message: 'atw.breakShort' });
+    }
+    if (hours > 10 && breakMin < 45) {
+        warnings.push({ type: 'break_very_short', message: 'atw.breakVeryShort' });
+    }
+    if (hours > 12) {
+        warnings.push({ type: 'shift_too_long', message: 'atw.shiftTooLong' });
+    }
+
+    return warnings;
+});
 </script>
 
 <template>
@@ -96,6 +124,19 @@ const cancel = (): void => {
                             :class="{ 'textarea-error': form.errors.notes }" rows="2"></textarea>
                     </fieldset>
                 </div>
+
+                <!-- ATW Warnings -->
+                <div v-if="atwWarnings.length > 0" class="alert alert-warning mt-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 shrink-0">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                    </svg>
+                    <div>
+                        <p v-for="(warning, idx) in atwWarnings" :key="idx" class="text-sm">
+                            {{ t(warning.message) }}
+                        </p>
+                    </div>
+                </div>
+
                 <div class="modal-action">
                     <button type="button" @click="cancel" class="btn btn-ghost">{{ t('common.cancel') }}</button>
                     <button type="submit" class="btn btn-primary" :disabled="form.processing">

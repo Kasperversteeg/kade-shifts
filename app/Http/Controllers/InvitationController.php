@@ -76,9 +76,10 @@ class InvitationController extends Controller
             'name' => $request->name,
             'email' => $invitation->email,
             'password' => Hash::make($request->password),
-            'role' => 'user',
             'email_verified_at' => now(),
         ]);
+
+        $user->assignRole('user');
 
         $invitation->update(['accepted_at' => now()]);
 

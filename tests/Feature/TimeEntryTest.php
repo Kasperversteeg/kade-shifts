@@ -199,7 +199,7 @@ class TimeEntryTest extends TestCase
         $response = $this->actingAs($user)->delete("/time-entries/{$entry->id}");
 
         $response->assertRedirect();
-        $this->assertDatabaseMissing('time_entries', ['id' => $entry->id]);
+        $this->assertSoftDeleted($entry);
     }
 
     public function test_user_cannot_delete_other_users_time_entry(): void

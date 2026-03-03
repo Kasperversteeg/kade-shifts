@@ -16,12 +16,15 @@ class InvitationTest extends TestCase
 
     private function createAdmin(): User
     {
-        return User::factory()->create(['role' => 'admin']);
+        return User::factory()->admin()->create();
     }
 
     private function createUser(): User
     {
-        return User::factory()->create(['role' => 'user']);
+        $user = User::factory()->create();
+        $user->assignRole('user');
+
+        return $user;
     }
 
     private function createInvitation(array $overrides = []): Invitation
@@ -134,8 +137,9 @@ class InvitationTest extends TestCase
         $this->assertDatabaseHas('users', [
             'name' => 'New User',
             'email' => 'newuser@example.com',
-            'role' => 'user',
         ]);
+        $newUser = User::where('email', 'newuser@example.com')->first();
+        $this->assertTrue($newUser->hasRole('user'));
     }
 
     public function test_completing_invitation_marks_it_as_accepted(): void

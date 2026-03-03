@@ -15,12 +15,15 @@ class AdminTest extends TestCase
 
     private function createAdmin(): User
     {
-        return User::factory()->create(['role' => 'admin']);
+        return User::factory()->admin()->create();
     }
 
     private function createUser(): User
     {
-        return User::factory()->create(['role' => 'user']);
+        $user = User::factory()->create();
+        $user->assignRole('user');
+
+        return $user;
     }
 
     public function test_admin_can_view_overview(): void
