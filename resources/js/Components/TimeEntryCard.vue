@@ -1,25 +1,32 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import dayjs from 'dayjs';
+import type { TimeEntry } from '@/types';
 
 const { t } = useI18n();
 
-const props = defineProps({
-    entry: Object,
-    readonly: { type: Boolean, default: false },
+interface Props {
+    entry: TimeEntry;
+    readonly?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+    readonly: false,
 });
 
-const emit = defineEmits(['edit']);
+const emit = defineEmits<{
+    edit: [entry: TimeEntry];
+}>();
 
-const formattedDate = computed(() => {
+const formattedDate = computed<string>(() => {
     return dayjs(props.entry.date).format('ddd, MMM D, YYYY');
 });
 
 const deleteForm = useForm({});
 
-const deleteEntry = () => {
+const deleteEntry = (): void => {
     if (confirm(t('timeEntries.deleteConfirm'))) {
         deleteForm.delete(route('time-entries.destroy', props.entry.id));
     }

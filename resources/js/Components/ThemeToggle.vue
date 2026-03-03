@@ -1,14 +1,14 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue';
 
-const isDark = ref(false);
+const isDark = ref<boolean>(false);
 
 onMounted(() => {
     isDark.value = localStorage.getItem('theme') === 'dark';
     document.documentElement.setAttribute('data-theme', isDark.value ? 'kade-dark' : 'kade');
 });
 
-const toggle = () => {
+const toggle = (): void => {
     isDark.value = !isDark.value;
     const theme = isDark.value ? 'kade-dark' : 'kade';
     document.documentElement.setAttribute('data-theme', theme);

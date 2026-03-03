@@ -1,18 +1,23 @@
-<script setup>
+<script setup lang="ts">
 import { useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import { ref, watch } from 'vue';
+import type { TimeEntry } from '@/types';
 
 const { t } = useI18n();
 
-const props = defineProps({
-    entry: Object,
-    show: Boolean,
-});
+interface Props {
+    entry: TimeEntry | null;
+    show: boolean;
+}
 
-const emit = defineEmits(['close']);
+const props = defineProps<Props>();
 
-const dialog = ref(null);
+const emit = defineEmits<{
+    close: [];
+}>();
+
+const dialog = ref<HTMLDialogElement | null>(null);
 
 const form = useForm({
     date: '',
@@ -22,7 +27,7 @@ const form = useForm({
     notes: '',
 });
 
-watch(() => props.show, (val) => {
+watch(() => props.show, (val: boolean) => {
     if (val && props.entry) {
         form.date = props.entry.date?.substring(0, 10);
         form.shift_start = props.entry.shift_start?.substring(0, 5);
@@ -35,7 +40,8 @@ watch(() => props.show, (val) => {
     }
 });
 
-const submit = () => {
+const submit = (): void => {
+    if (!props.entry) return;
     form.patch(route('time-entries.update', props.entry.id), {
         onSuccess: () => {
             emit('close');
@@ -43,7 +49,7 @@ const submit = () => {
     });
 };
 
-const cancel = () => {
+const cancel = (): void => {
     form.clearErrors();
     emit('close');
 };
