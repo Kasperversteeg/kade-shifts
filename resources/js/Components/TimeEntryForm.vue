@@ -1,10 +1,14 @@
-<script setup>
+<script setup lang="ts">
 import { useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import dayjs from 'dayjs';
 
 const { t } = useI18n();
-const emit = defineEmits(['cancel', 'success']);
+
+const emit = defineEmits<{
+    cancel: [];
+    success: [];
+}>();
 
 const form = useForm({
     date: dayjs().format('YYYY-MM-DD'),
@@ -14,7 +18,7 @@ const form = useForm({
     notes: '',
 });
 
-const submit = () => {
+const submit = (): void => {
     form.post(route('time-entries.store'), {
         onSuccess: () => {
             emit('success');

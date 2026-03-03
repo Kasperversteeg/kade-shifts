@@ -1,22 +1,25 @@
-<script setup>
+<script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import MonthNavigator from '@/Components/MonthNavigator.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
+import type { UserWithHours } from '@/types';
 
 const { t } = useI18n();
 
-const props = defineProps({
-    users: Array,
-    grandTotal: Number,
-    currentMonth: String,
-});
+interface Props {
+    users: UserWithHours[];
+    grandTotal: number;
+    currentMonth: string;
+}
+
+const props = defineProps<Props>();
 
 const form = useForm({
     month: props.currentMonth,
 });
 
-const sendReport = () => {
+const sendReport = (): void => {
     form.post(route('admin.send-report'));
 };
 </script>

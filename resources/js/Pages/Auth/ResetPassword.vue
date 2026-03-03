@@ -1,21 +1,16 @@
-<script setup>
+<script setup lang="ts">
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
 import { Head, useForm } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 
-const props = defineProps({
-    email: {
-        type: String,
-        required: true,
-    },
-    token: {
-        type: String,
-        required: true,
-    },
-});
+const { t } = useI18n();
+
+interface Props {
+    email: string;
+    token: string;
+}
+
+const props = defineProps<Props>();
 
 const form = useForm({
     token: props.token,
@@ -24,7 +19,7 @@ const form = useForm({
     password_confirmation: '',
 });
 
-const submit = () => {
+const submit = (): void => {
     form.post(route('password.store'), {
         onFinish: () => form.reset('password', 'password_confirmation'),
     });
@@ -33,68 +28,72 @@ const submit = () => {
 
 <template>
     <GuestLayout>
-        <Head title="Reset Password" />
+        <Head :title="t('auth.resetPassword')" />
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
-
-                <TextInput
+        <form @submit.prevent="submit" class="space-y-4">
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">{{ t('auth.email') }}</span>
+                </label>
+                <input
                     id="email"
                     type="email"
-                    class="mt-1 block w-full"
                     v-model="form.email"
+                    class="input input-bordered"
+                    :class="{ 'input-error': form.errors.email }"
                     required
                     autofocus
                     autocomplete="username"
                 />
-
-                <InputError class="mt-2" :message="form.errors.email" />
+                <label v-if="form.errors.email" class="label">
+                    <span class="label-text-alt text-error">{{ form.errors.email }}</span>
+                </label>
             </div>
 
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-
-                <TextInput
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">{{ t('auth.password') }}</span>
+                </label>
+                <input
                     id="password"
                     type="password"
-                    class="mt-1 block w-full"
                     v-model="form.password"
+                    class="input input-bordered"
+                    :class="{ 'input-error': form.errors.password }"
                     required
                     autocomplete="new-password"
                 />
-
-                <InputError class="mt-2" :message="form.errors.password" />
+                <label v-if="form.errors.password" class="label">
+                    <span class="label-text-alt text-error">{{ form.errors.password }}</span>
+                </label>
             </div>
 
-            <div class="mt-4">
-                <InputLabel
-                    for="password_confirmation"
-                    value="Confirm Password"
-                />
-
-                <TextInput
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">{{ t('auth.confirmPassword') }}</span>
+                </label>
+                <input
                     id="password_confirmation"
                     type="password"
-                    class="mt-1 block w-full"
                     v-model="form.password_confirmation"
+                    class="input input-bordered"
+                    :class="{ 'input-error': form.errors.password_confirmation }"
                     required
                     autocomplete="new-password"
                 />
-
-                <InputError
-                    class="mt-2"
-                    :message="form.errors.password_confirmation"
-                />
+                <label v-if="form.errors.password_confirmation" class="label">
+                    <span class="label-text-alt text-error">{{ form.errors.password_confirmation }}</span>
+                </label>
             </div>
 
-            <div class="mt-4 flex items-center justify-end">
-                <PrimaryButton
-                    :class="{ 'opacity-25': form.processing }"
+            <div class="flex justify-end">
+                <button
+                    type="submit"
+                    class="btn btn-primary"
                     :disabled="form.processing"
                 >
-                    Reset Password
-                </PrimaryButton>
+                    {{ t('auth.resetPasswordButton') }}
+                </button>
             </div>
         </form>
     </GuestLayout>

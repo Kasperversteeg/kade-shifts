@@ -1,32 +1,34 @@
-<script setup>
+<script setup lang="ts">
 import { router } from '@inertiajs/vue3';
 import dayjs from 'dayjs';
 import { computed } from 'vue';
 
-const props = defineProps({
-    currentMonth: String,
-});
+interface Props {
+    currentMonth: string;
+}
+
+const props = defineProps<Props>();
 
 const currentDate = computed(() => dayjs(props.currentMonth + '-01'));
-const displayMonth = computed(() => currentDate.value.format('MMMM YYYY'));
+const displayMonth = computed<string>(() => currentDate.value.format('MMMM YYYY'));
 
-const isCurrentMonth = computed(() => {
+const isCurrentMonth = computed<boolean>(() => {
     return currentDate.value.format('YYYY-MM') === dayjs().format('YYYY-MM');
 });
 
-const goToPreviousMonth = () => {
+const goToPreviousMonth = (): void => {
     const prevMonth = currentDate.value.subtract(1, 'month').format('YYYY-MM');
     router.get(window.location.pathname, { month: prevMonth }, { preserveState: true });
 };
 
-const goToNextMonth = () => {
+const goToNextMonth = (): void => {
     const nextMonth = currentDate.value.add(1, 'month').format('YYYY-MM');
     router.get(window.location.pathname, { month: nextMonth }, { preserveState: true });
 };
 
-const goToCurrentMonth = () => {
-    const currentMonth = dayjs().format('YYYY-MM');
-    router.get(window.location.pathname, { month: currentMonth }, { preserveState: true });
+const goToCurrentMonth = (): void => {
+    const month = dayjs().format('YYYY-MM');
+    router.get(window.location.pathname, { month }, { preserveState: true });
 };
 </script>
 

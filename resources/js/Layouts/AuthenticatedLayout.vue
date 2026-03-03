@@ -1,15 +1,22 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import ThemeToggle from '@/Components/ThemeToggle.vue';
+import type { PageProps, User } from '@/types';
 
-const page = usePage();
-const user = computed(() => page.props.auth.user);
-const isAdmin = computed(() => user.value?.role === 'admin');
+interface Toast {
+    id: number;
+    message: string;
+    type: 'success' | 'error';
+}
 
-const toasts = ref([]);
+const page = usePage<PageProps>();
+const user = computed<User>(() => page.props.auth.user);
+const isAdmin = computed<boolean>(() => user.value?.role === 'admin');
 
-function addToast(message, type) {
+const toasts = ref<Toast[]>([]);
+
+function addToast(message: string, type: 'success' | 'error'): void {
     const id = Date.now();
     toasts.value.push({ id, message, type });
     setTimeout(() => {

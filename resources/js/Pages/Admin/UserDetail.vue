@@ -1,19 +1,22 @@
-<script setup>
+<script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import MonthNavigator from '@/Components/MonthNavigator.vue';
 import HoursSummary from '@/Components/HoursSummary.vue';
 import TimeEntryCard from '@/Components/TimeEntryCard.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
+import type { User, TimeEntry } from '@/types';
 
 const { t } = useI18n();
 
-defineProps({
-    user: Object,
-    entries: Array,
-    monthTotal: Number,
-    currentMonth: String,
-});
+interface Props {
+    user: User;
+    entries: TimeEntry[];
+    monthTotal: number;
+    currentMonth: string;
+}
+
+defineProps<Props>();
 </script>
 
 <template>

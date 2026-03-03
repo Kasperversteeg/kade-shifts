@@ -1,38 +1,42 @@
-<script setup>
-import DangerButton from '@/Components/DangerButton.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import Modal from '@/Components/Modal.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
+<script setup lang="ts">
 import { useForm } from '@inertiajs/vue3';
-import { nextTick, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { nextTick, ref, watch } from 'vue';
 
-const confirmingUserDeletion = ref(false);
-const passwordInput = ref(null);
+const { t } = useI18n();
+
+const confirmingUserDeletion = ref<boolean>(false);
+const passwordInput = ref<HTMLInputElement | null>(null);
+const dialog = ref<HTMLDialogElement | null>(null);
 
 const form = useForm({
     password: '',
 });
 
-const confirmUserDeletion = () => {
+const confirmUserDeletion = (): void => {
     confirmingUserDeletion.value = true;
-
-    nextTick(() => passwordInput.value.focus());
 };
 
-const deleteUser = () => {
+watch(confirmingUserDeletion, (val) => {
+    if (val) {
+        dialog.value?.showModal();
+        nextTick(() => passwordInput.value?.focus());
+    } else {
+        dialog.value?.close();
+    }
+});
+
+const deleteUser = (): void => {
     form.delete(route('profile.destroy'), {
         preserveScroll: true,
         onSuccess: () => closeModal(),
-        onError: () => passwordInput.value.focus(),
+        onError: () => passwordInput.value?.focus(),
         onFinish: () => form.reset(),
     });
 };
 
-const closeModal = () => {
+const closeModal = (): void => {
     confirmingUserDeletion.value = false;
-
     form.clearErrors();
     form.reset();
 };
@@ -41,68 +45,63 @@ const closeModal = () => {
 <template>
     <section class="space-y-6">
         <header>
-            <h2 class="text-lg font-medium text-gray-900">
-                Delete Account
+            <h2 class="text-lg font-medium">
+                {{ t('profile.deleteAccount') }}
             </h2>
-
-            <p class="mt-1 text-sm text-gray-600">
-                Once your account is deleted, all of its resources and data will
-                be permanently deleted. Before deleting your account, please
-                download any data or information that you wish to retain.
+            <p class="mt-1 text-sm opacity-60">
+                {{ t('profile.deleteAccountDescription') }}
             </p>
         </header>
 
-        <DangerButton @click="confirmUserDeletion">Delete Account</DangerButton>
+        <button class="btn btn-error" @click="confirmUserDeletion">
+            {{ t('profile.deleteAccountButton') }}
+        </button>
 
-        <Modal :show="confirmingUserDeletion" @close="closeModal">
-            <div class="p-6">
-                <h2
-                    class="text-lg font-medium text-gray-900"
-                >
-                    Are you sure you want to delete your account?
-                </h2>
+        <dialog ref="dialog" class="modal" @close="closeModal">
+            <div class="modal-box">
+                <h3 class="font-bold text-lg mb-2">
+                    {{ t('profile.deleteAccountConfirm') }}
+                </h3>
 
-                <p class="mt-1 text-sm text-gray-600">
-                    Once your account is deleted, all of its resources and data
-                    will be permanently deleted. Please enter your password to
-                    confirm you would like to permanently delete your account.
+                <p class="text-sm opacity-60">
+                    {{ t('profile.deleteAccountConfirmDescription') }}
                 </p>
 
-                <div class="mt-6">
-                    <InputLabel
-                        for="password"
-                        value="Password"
-                        class="sr-only"
-                    />
-
-                    <TextInput
+                <div class="form-control mt-4">
+                    <label class="label">
+                        <span class="label-text">{{ t('auth.password') }}</span>
+                    </label>
+                    <input
                         id="password"
                         ref="passwordInput"
-                        v-model="form.password"
                         type="password"
-                        class="mt-1 block w-3/4"
-                        placeholder="Password"
+                        v-model="form.password"
+                        class="input input-bordered"
+                        :class="{ 'input-error': form.errors.password }"
+                        :placeholder="t('auth.password')"
                         @keyup.enter="deleteUser"
                     />
-
-                    <InputError :message="form.errors.password" class="mt-2" />
+                    <label v-if="form.errors.password" class="label">
+                        <span class="label-text-alt text-error">{{ form.errors.password }}</span>
+                    </label>
                 </div>
 
-                <div class="mt-6 flex justify-end">
-                    <SecondaryButton @click="closeModal">
-                        Cancel
-                    </SecondaryButton>
-
-                    <DangerButton
-                        class="ms-3"
-                        :class="{ 'opacity-25': form.processing }"
+                <div class="modal-action">
+                    <button class="btn btn-ghost" @click="closeModal">
+                        {{ t('common.cancel') }}
+                    </button>
+                    <button
+                        class="btn btn-error"
                         :disabled="form.processing"
                         @click="deleteUser"
                     >
-                        Delete Account
-                    </DangerButton>
+                        {{ t('profile.deleteAccountButton') }}
+                    </button>
                 </div>
             </div>
-        </Modal>
+            <form method="dialog" class="modal-backdrop">
+                <button @click="closeModal">close</button>
+            </form>
+        </dialog>
     </section>
 </template>

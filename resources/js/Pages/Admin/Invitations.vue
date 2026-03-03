@@ -1,32 +1,35 @@
-<script setup>
+<script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import dayjs from 'dayjs';
+import type { Invitation } from '@/types';
 
 const { t } = useI18n();
 
-defineProps({
-    invitations: Array,
-});
+interface Props {
+    invitations: Invitation[];
+}
+
+defineProps<Props>();
 
 const form = useForm({
     email: '',
 });
 
-const sendInvitation = () => {
+const sendInvitation = (): void => {
     form.post(route('admin.invitations.store'), {
         onSuccess: () => form.reset(),
     });
 };
 
-const getStatus = (invitation) => {
+const getStatus = (invitation: Invitation): string => {
     if (invitation.accepted_at) return t('invitations.accepted');
     if (dayjs(invitation.expires_at).isBefore(dayjs())) return t('invitations.expired');
     return t('invitations.pending');
 };
 
-const getStatusClass = (invitation) => {
+const getStatusClass = (invitation: Invitation): string => {
     if (invitation.accepted_at) return 'badge-success';
     if (dayjs(invitation.expires_at).isBefore(dayjs())) return 'badge-error';
     return 'badge-warning';

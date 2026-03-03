@@ -88,7 +88,7 @@ class AdminController extends Controller
                 ];
             });
 
-        Mail::to(auth()->user()->email)->send(new MonthlyHoursReport($users, $month));
+        Mail::to(auth()->user()->email)->queue(new MonthlyHoursReport($users, $month));
 
         return redirect()->back()->with('success', 'Monthly report sent successfully!');
     }

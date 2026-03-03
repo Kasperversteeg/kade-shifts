@@ -1,13 +1,15 @@
-<script setup>
+<script setup lang="ts">
 import dayjs from 'dayjs';
 import { computed } from 'vue';
 
-const props = defineProps({
-    total: Number,
-    month: String,
-});
+interface Props {
+    total: number;
+    month: string;
+}
 
-const monthName = computed(() => {
+const props = defineProps<Props>();
+
+const monthName = computed<string>(() => {
     return dayjs(props.month + '-01').format('MMMM YYYY');
 });
 </script>
