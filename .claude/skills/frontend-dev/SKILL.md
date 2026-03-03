@@ -52,7 +52,7 @@ const { t } = useI18n();
 ## Rules
 
 - **TypeScript required**: `<script setup lang="ts">` on every component. Define interfaces for props, emits, and data.
-- **DaisyUI first**: Use `btn`, `card`, `form-control`, `input`, `modal`, `table`, `alert`, `badge`, `navbar`, `menu`, `dropdown`, `stats`, `swap`, `toggle` classes. Only use raw Tailwind for spacing, grid, and flex layout.
+- **DaisyUI v5 syntax**: Use `btn`, `card`, `fieldset`/`fieldset-legend`, `input`, `modal`, `table`, `alert`, `badge`, `navbar`, `menu`, `dropdown`, `stats`, `swap`, `toggle` classes. **Never** use deprecated v4 classes like `form-control`, `label-text`, `label-text-alt`, `input-bordered`, `textarea-bordered`, or `select-bordered`. Only use raw Tailwind for spacing, grid, and flex layout.
 - **Theme-aware colors**: Use `bg-base-100/200/300`, `text-base-content`, `text-primary`, `btn-primary/secondary/accent/error`. Never hardcode hex or named colors.
 - **Translations**: All user-facing strings through `t('section.key')`. Add to both `resources/js/lang/en.json` and `nl.json`.
 - **Inertia patterns**: Use `useForm()` for forms, `Link` for navigation, `usePage()` for shared props. Never use `fetch()` or `axios` directly for page data.

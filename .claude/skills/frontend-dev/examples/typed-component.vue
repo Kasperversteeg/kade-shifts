@@ -119,35 +119,27 @@ const formatDate = (date: string): string => {
 
             <form v-else @submit.prevent="submit" class="space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text">{{ t('timeEntries.date') }}</span>
-                        </label>
+                    <fieldset class="fieldset">
+                        <legend class="fieldset-legend">{{ t('timeEntries.date') }}</legend>
                         <input
                             type="date"
                             v-model="form.date"
-                            class="input input-bordered"
+                            class="input w-full"
                             :class="{ 'input-error': form.errors.date }"
                         />
-                        <label v-if="form.errors.date" class="label">
-                            <span class="label-text-alt text-error">{{ form.errors.date }}</span>
-                        </label>
-                    </div>
+                        <p v-if="form.errors.date" class="label text-error">{{ form.errors.date }}</p>
+                    </fieldset>
 
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text">{{ t('timeEntries.shiftStart') }}</span>
-                        </label>
+                    <fieldset class="fieldset">
+                        <legend class="fieldset-legend">{{ t('timeEntries.shiftStart') }}</legend>
                         <input
                             type="time"
                             v-model="form.shift_start"
-                            class="input input-bordered"
+                            class="input w-full"
                             :class="{ 'input-error': form.errors.shift_start }"
                         />
-                        <label v-if="form.errors.shift_start" class="label">
-                            <span class="label-text-alt text-error">{{ form.errors.shift_start }}</span>
-                        </label>
-                    </div>
+                        <p v-if="form.errors.shift_start" class="label text-error">{{ form.errors.shift_start }}</p>
+                    </fieldset>
                 </div>
 
                 <div class="flex gap-2 justify-end">
