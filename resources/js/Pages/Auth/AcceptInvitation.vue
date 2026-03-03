@@ -39,50 +39,40 @@ const submit = (): void => {
         </p>
 
         <form @submit.prevent="submit" class="space-y-4">
-            <div class="form-control">
-                <label class="label">
-                    <span class="label-text">{{ t('auth.name') }}</span>
-                </label>
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ t('auth.name') }}</legend>
                 <input
                     type="text"
                     v-model="form.name"
-                    class="input input-bordered"
+                    class="input w-full"
                     :class="{ 'input-error': form.errors.name }"
                     required
                     autofocus
                 />
-                <label v-if="form.errors.name" class="label">
-                    <span class="label-text-alt text-error">{{ form.errors.name }}</span>
-                </label>
-            </div>
+                <p v-if="form.errors.name" class="label text-error">{{ form.errors.name }}</p>
+            </fieldset>
 
-            <div class="form-control">
-                <label class="label">
-                    <span class="label-text">{{ t('auth.password') }}</span>
-                </label>
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ t('auth.password') }}</legend>
                 <input
                     type="password"
                     v-model="form.password"
-                    class="input input-bordered"
+                    class="input w-full"
                     :class="{ 'input-error': form.errors.password }"
                     required
                 />
-                <label v-if="form.errors.password" class="label">
-                    <span class="label-text-alt text-error">{{ form.errors.password }}</span>
-                </label>
-            </div>
+                <p v-if="form.errors.password" class="label text-error">{{ form.errors.password }}</p>
+            </fieldset>
 
-            <div class="form-control">
-                <label class="label">
-                    <span class="label-text">{{ t('auth.confirmPassword') }}</span>
-                </label>
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ t('auth.confirmPassword') }}</legend>
                 <input
                     type="password"
                     v-model="form.password_confirmation"
-                    class="input input-bordered"
+                    class="input w-full"
                     required
                 />
-            </div>
+            </fieldset>
 
             <button
                 type="submit"

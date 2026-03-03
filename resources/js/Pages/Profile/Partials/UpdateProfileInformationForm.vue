@@ -36,42 +36,34 @@ const form = useForm({
             @submit.prevent="form.patch(route('profile.update'))"
             class="mt-6 space-y-4"
         >
-            <div class="form-control">
-                <label class="label">
-                    <span class="label-text">{{ t('profile.name') }}</span>
-                </label>
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ t('profile.name') }}</legend>
                 <input
                     id="name"
                     type="text"
                     v-model="form.name"
-                    class="input input-bordered"
+                    class="input w-full"
                     :class="{ 'input-error': form.errors.name }"
                     required
                     autofocus
                     autocomplete="name"
                 />
-                <label v-if="form.errors.name" class="label">
-                    <span class="label-text-alt text-error">{{ form.errors.name }}</span>
-                </label>
-            </div>
+                <p v-if="form.errors.name" class="label text-error">{{ form.errors.name }}</p>
+            </fieldset>
 
-            <div class="form-control">
-                <label class="label">
-                    <span class="label-text">{{ t('auth.email') }}</span>
-                </label>
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ t('auth.email') }}</legend>
                 <input
                     id="email"
                     type="email"
                     v-model="form.email"
-                    class="input input-bordered"
+                    class="input w-full"
                     :class="{ 'input-error': form.errors.email }"
                     required
                     autocomplete="username"
                 />
-                <label v-if="form.errors.email" class="label">
-                    <span class="label-text-alt text-error">{{ form.errors.email }}</span>
-                </label>
-            </div>
+                <p v-if="form.errors.email" class="label text-error">{{ form.errors.email }}</p>
+            </fieldset>
 
             <div v-if="mustVerifyEmail && user.email_verified_at === null">
                 <p class="text-sm">

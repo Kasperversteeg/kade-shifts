@@ -130,6 +130,8 @@ const isAdmin = computed(() => user.value.role === 'admin');
 
 ## Form Handling Patterns
 
+All forms use DaisyUI v5 syntax: `fieldset`/`fieldset-legend` for labeled fields. **Never** use deprecated v4 classes (`form-control`, `label-text`, `input-bordered`, etc.).
+
 ### Basic Form (POST)
 
 ```vue
@@ -155,6 +157,21 @@ const submit = (): void => {
     });
 };
 </script>
+
+<template>
+    <form @submit.prevent="submit" class="space-y-4">
+        <fieldset class="fieldset">
+            <legend class="fieldset-legend">{{ t('timeEntries.date') }}</legend>
+            <input type="date" v-model="form.date" class="input w-full"
+                :class="{ 'input-error': form.errors.date }" />
+            <p v-if="form.errors.date" class="label text-error">{{ form.errors.date }}</p>
+        </fieldset>
+
+        <button type="submit" class="btn btn-primary" :disabled="form.processing">
+            {{ form.processing ? t('timeEntries.saving') : t('timeEntries.save') }}
+        </button>
+    </form>
+</template>
 ```
 
 ### Edit Form (PATCH)

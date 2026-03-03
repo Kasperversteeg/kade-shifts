@@ -72,43 +72,43 @@ Two themes enabled: `light` (default) and `dark`. Theme is toggled via `data-the
 </div>
 ```
 
-### Forms
+### Forms (DaisyUI v5)
+
+Use `fieldset` + `fieldset-legend` for labeled form fields. **Never** use the deprecated v4 classes: `form-control`, `label-text`, `label-text-alt`, `input-bordered`, `textarea-bordered`, `select-bordered`.
 
 ```html
 <!-- Text input -->
-<div class="form-control">
-    <label class="label">
-        <span class="label-text">Label</span>
-    </label>
-    <input type="text" class="input input-bordered" />
-    <label class="label">
-        <span class="label-text-alt text-error">Error message</span>
-    </label>
-</div>
+<fieldset class="fieldset">
+    <legend class="fieldset-legend">Label</legend>
+    <input type="text" class="input w-full" />
+    <p class="label text-error">Error message</p>
+</fieldset>
 
 <!-- Select -->
-<div class="form-control">
-    <label class="label">
-        <span class="label-text">Pick one</span>
-    </label>
-    <select class="select select-bordered">
+<fieldset class="fieldset">
+    <legend class="fieldset-legend">Pick one</legend>
+    <select class="select w-full">
         <option disabled selected>Choose</option>
         <option>Option A</option>
     </select>
-</div>
+</fieldset>
 
 <!-- Textarea -->
-<div class="form-control">
-    <label class="label">
-        <span class="label-text">Notes</span>
-    </label>
-    <textarea class="textarea textarea-bordered" rows="3"></textarea>
-</div>
+<fieldset class="fieldset">
+    <legend class="fieldset-legend">Notes</legend>
+    <textarea class="textarea w-full" rows="3"></textarea>
+</fieldset>
+
+<!-- Checkbox with label -->
+<label class="label cursor-pointer justify-start gap-2">
+    <input type="checkbox" class="checkbox checkbox-sm" />
+    Remember me
+</label>
 
 <!-- Error state -->
-<input class="input input-bordered input-error" />
-<textarea class="textarea textarea-bordered textarea-error"></textarea>
-<select class="select select-bordered select-error"></select>
+<input class="input input-error" />
+<textarea class="textarea textarea-error"></textarea>
+<select class="select select-error"></select>
 ```
 
 ### Tables
@@ -306,8 +306,8 @@ Two themes enabled: `light` (default) and `dark`. Theme is toggled via `data-the
 ```html
 <!-- Fields stack on mobile, 2-col on tablet+ -->
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div class="form-control">...</div>
-    <div class="form-control">...</div>
+    <fieldset class="fieldset">...</fieldset>
+    <fieldset class="fieldset">...</fieldset>
 </div>
 ```
 

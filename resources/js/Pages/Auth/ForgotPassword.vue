@@ -33,24 +33,20 @@ const submit = (): void => {
         </div>
 
         <form @submit.prevent="submit" class="space-y-4">
-            <div class="form-control">
-                <label class="label">
-                    <span class="label-text">{{ t('auth.email') }}</span>
-                </label>
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ t('auth.email') }}</legend>
                 <input
                     id="email"
                     type="email"
                     v-model="form.email"
-                    class="input input-bordered"
+                    class="input w-full"
                     :class="{ 'input-error': form.errors.email }"
                     required
                     autofocus
                     autocomplete="username"
                 />
-                <label v-if="form.errors.email" class="label">
-                    <span class="label-text-alt text-error">{{ form.errors.email }}</span>
-                </label>
-            </div>
+                <p v-if="form.errors.email" class="label text-error">{{ form.errors.email }}</p>
+            </fieldset>
 
             <div class="flex justify-end">
                 <button

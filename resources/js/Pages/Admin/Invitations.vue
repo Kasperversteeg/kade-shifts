@@ -53,12 +53,10 @@ const getStatusClass = (invitation: Invitation): string => {
                 <div class="card-body">
                     <h2 class="card-title">{{ t('invitations.sendInvite') }}</h2>
                     <form @submit.prevent="sendInvitation" class="flex flex-col md:flex-row gap-2">
-                        <div class="form-control flex-1">
+                        <div class="flex-1">
                             <input type="email" v-model="form.email" :placeholder="t('invitations.emailPlaceholder')"
-                                class="input input-bordered" :class="{ 'input-error': form.errors.email }" required />
-                            <label v-if="form.errors.email" class="label">
-                                <span class="label-text-alt text-error">{{ form.errors.email }}</span>
-                            </label>
+                                class="input w-full" :class="{ 'input-error': form.errors.email }" required />
+                            <p v-if="form.errors.email" class="label text-error">{{ form.errors.email }}</p>
                         </div>
                         <button type="submit" class="btn btn-primary" :disabled="form.processing">
                             {{ form.processing ? t('admin.sending') : t('invitations.send') }}

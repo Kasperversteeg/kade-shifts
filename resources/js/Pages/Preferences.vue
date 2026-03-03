@@ -35,15 +35,13 @@ const submit = (): void => {
                     <h2 class="card-title mb-4">{{ t('preferences.title') }}</h2>
 
                     <form @submit.prevent="submit" class="space-y-4">
-                        <div class="form-control">
-                            <label class="label">
-                                <span class="label-text">{{ t('preferences.language') }}</span>
-                            </label>
-                            <select v-model="form.language" class="select select-bordered w-full">
+                        <fieldset class="fieldset">
+                            <legend class="fieldset-legend">{{ t('preferences.language') }}</legend>
+                            <select v-model="form.language" class="select w-full">
                                 <option value="en">English</option>
                                 <option value="nl">Nederlands</option>
                             </select>
-                        </div>
+                        </fieldset>
 
                         <div class="flex justify-end">
                             <button type="submit" class="btn btn-primary" :disabled="form.processing">
