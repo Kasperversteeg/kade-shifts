@@ -79,7 +79,7 @@ watch(() => page.props.flash, (flash) => {
                     </li>
                     <li>
                         <Link :href="route('admin.users')"
-                            :class="{ 'active bg-neutral-focus': route().current('admin.users') || route().current('admin.user-detail') || route().current('admin.user-edit') }">
+                            :class="{ 'active bg-neutral-focus': route().current('admin.users') || route().current('admin.user-detail') || route().current('admin.user-edit') || route().current('admin.user-shifts') }">
                             {{ $t('adminNav.users') }}
                         </Link>
                     </li>

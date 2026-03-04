@@ -41,12 +41,6 @@ class AdminController extends Controller
                     'total_hours' => $user->timeEntries->sum('total_hours'),
                     'entries_count' => $user->timeEntries->count(),
                     'hourly_rate' => (float) $user->hourly_rate,
-                    'status_counts' => [
-                        'draft' => $user->timeEntries->where('status', 'draft')->count(),
-                        'submitted' => $user->timeEntries->where('status', 'submitted')->count(),
-                        'approved' => $user->timeEntries->where('status', 'approved')->count(),
-                        'rejected' => $user->timeEntries->where('status', 'rejected')->count(),
-                    ],
                 ];
             });
 
@@ -59,7 +53,7 @@ class AdminController extends Controller
             ->where('contract_end_date', '<=', now()->addDays(45))
             ->where('contract_end_date', '>=', today())
             ->count();
-        $estimatedMonthlyCost = $users->sum(fn ($u) => $u['total_hours'] * $u['hourly_rate']);
+        $estimatedMonthlyCost = $users->sum(fn($u) => $u['total_hours'] * $u['hourly_rate']);
 
         return Inertia::render('Admin/Overview', [
             'users' => $users,
@@ -92,7 +86,7 @@ class AdminController extends Controller
             ->with('registrar:id,name')
             ->orderByDesc('start_date')
             ->get()
-            ->map(fn ($sl) => [
+            ->map(fn($sl) => [
                 'id' => $sl->id,
                 'start_date' => $sl->start_date->format('Y-m-d'),
                 'end_date' => $sl->end_date?->format('Y-m-d'),
@@ -103,7 +97,7 @@ class AdminController extends Controller
                 'created_at' => $sl->created_at->format('Y-m-d'),
             ]);
 
-        $documents = $user->documents()->with('uploader')->latest()->get()->map(fn ($doc) => [
+        $documents = $user->documents()->with('uploader')->latest()->get()->map(fn($doc) => [
             'id' => $doc->id,
             'type' => $doc->type,
             'original_filename' => $doc->original_filename,
@@ -210,7 +204,7 @@ class AdminController extends Controller
             }])
             ->get();
 
-        $grandTotal = $users->sum(fn ($user) => $user->timeEntries->sum('total_hours'));
+        $grandTotal = $users->sum(fn($user) => $user->timeEntries->sum('total_hours'));
         $monthName = $date->format('F Y');
 
         $pdf = Pdf::loadView('reports.monthly', compact('users', 'grandTotal', 'monthName'));

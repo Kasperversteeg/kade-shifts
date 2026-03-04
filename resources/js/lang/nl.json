@@ -155,7 +155,10 @@
         "profileStatus": "Profiel",
         "noUsersFound": "Geen medewerkers gevonden.",
         "contractInfo": "Contract & Financieel",
-        "personalInfo": "Persoonlijke Gegevens"
+        "personalInfo": "Persoonlijke Gegevens",
+        "shifts": "Diensten",
+        "approvedHours": "Goedgekeurde Uren",
+        "viewShifts": "Bekijk Diensten"
     },
     "invitations": {
         "title": "Uitnodigingen Beheren",

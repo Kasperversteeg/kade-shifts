@@ -155,7 +155,10 @@
         "profileStatus": "Profile",
         "noUsersFound": "No users found.",
         "contractInfo": "Contract & Financial",
-        "personalInfo": "Personal Information"
+        "personalInfo": "Personal Information",
+        "shifts": "Shifts",
+        "approvedHours": "Approved Hours",
+        "viewShifts": "View Shifts"
     },
     "invitations": {
         "title": "Manage Invitations",
