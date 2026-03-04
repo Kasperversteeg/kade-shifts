@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 
@@ -55,10 +55,10 @@ const submit = (): void => {
 <template>
     <Head :title="`${t('admin.editUser')} - ${user.name}`" />
 
-    <AuthenticatedLayout>
+    <AdminLayout>
         <div class="space-y-4">
             <div class="flex items-center gap-2">
-                <Link :href="route('admin.user-detail', user.id)" class="btn btn-ghost btn-sm">
+                <Link :href="route('admin.users')" class="btn btn-ghost btn-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                         stroke="currentColor" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
@@ -93,189 +93,196 @@ const submit = (): void => {
                 </div>
             </div>
 
-            <!-- Edit Form -->
-            <div class="card bg-base-100 shadow-xl">
-                <div class="card-body">
-                    <h2 class="card-title mb-4">{{ t('admin.userProfile') }}</h2>
+            <form @submit.prevent="submit" class="space-y-4">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <!-- Contract & Financial Panel -->
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            <h2 class="card-title mb-4">{{ t('admin.contractInfo') }}</h2>
 
-                    <form @submit.prevent="submit" class="space-y-6">
-                        <!-- Contract & Financial -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <fieldset class="fieldset">
-                                <legend class="fieldset-legend">{{ t('admin.hourlyRate') }}</legend>
-                                <input
-                                    type="number"
-                                    v-model="form.hourly_rate"
-                                    step="0.01"
-                                    min="0"
-                                    class="input w-full"
-                                    :class="{ 'input-error': form.errors.hourly_rate }"
-                                    placeholder="0.00"
-                                />
-                                <p v-if="form.errors.hourly_rate" class="label text-error">
-                                    {{ form.errors.hourly_rate }}
-                                </p>
-                            </fieldset>
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <fieldset class="fieldset">
+                                        <legend class="fieldset-legend">{{ t('admin.hourlyRate') }}</legend>
+                                        <input
+                                            type="number"
+                                            v-model="form.hourly_rate"
+                                            step="0.01"
+                                            min="0"
+                                            class="input w-full"
+                                            :class="{ 'input-error': form.errors.hourly_rate }"
+                                            placeholder="0.00"
+                                        />
+                                        <p v-if="form.errors.hourly_rate" class="label text-error">
+                                            {{ form.errors.hourly_rate }}
+                                        </p>
+                                    </fieldset>
 
-                            <fieldset class="fieldset">
-                                <legend class="fieldset-legend">{{ t('admin.contractType') }}</legend>
-                                <select
-                                    v-model="form.contract_type"
-                                    class="select w-full"
-                                    :class="{ 'select-error': form.errors.contract_type }"
-                                >
-                                    <option value="">—</option>
-                                    <option value="vast">{{ t('admin.contractTypes.vast') }}</option>
-                                    <option value="flex">{{ t('admin.contractTypes.flex') }}</option>
-                                    <option value="oproep">{{ t('admin.contractTypes.oproep') }}</option>
-                                </select>
-                                <p v-if="form.errors.contract_type" class="label text-error">
-                                    {{ form.errors.contract_type }}
-                                </p>
-                            </fieldset>
+                                    <fieldset class="fieldset">
+                                        <legend class="fieldset-legend">{{ t('admin.contractType') }}</legend>
+                                        <select
+                                            v-model="form.contract_type"
+                                            class="select w-full"
+                                            :class="{ 'select-error': form.errors.contract_type }"
+                                        >
+                                            <option value="">—</option>
+                                            <option value="vast">{{ t('admin.contractTypes.vast') }}</option>
+                                            <option value="flex">{{ t('admin.contractTypes.flex') }}</option>
+                                            <option value="oproep">{{ t('admin.contractTypes.oproep') }}</option>
+                                        </select>
+                                        <p v-if="form.errors.contract_type" class="label text-error">
+                                            {{ form.errors.contract_type }}
+                                        </p>
+                                    </fieldset>
+                                </div>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <fieldset class="fieldset">
+                                        <legend class="fieldset-legend">{{ t('admin.contractStart') }}</legend>
+                                        <input
+                                            type="date"
+                                            v-model="form.contract_start_date"
+                                            class="input w-full"
+                                            :class="{ 'input-error': form.errors.contract_start_date }"
+                                        />
+                                        <p v-if="form.errors.contract_start_date" class="label text-error">
+                                            {{ form.errors.contract_start_date }}
+                                        </p>
+                                    </fieldset>
+
+                                    <fieldset class="fieldset">
+                                        <legend class="fieldset-legend">{{ t('admin.contractEnd') }}</legend>
+                                        <input
+                                            type="date"
+                                            v-model="form.contract_end_date"
+                                            class="input w-full"
+                                            :class="{ 'input-error': form.errors.contract_end_date }"
+                                        />
+                                        <p v-if="form.errors.contract_end_date" class="label text-error">
+                                            {{ form.errors.contract_end_date }}
+                                        </p>
+                                    </fieldset>
+                                </div>
+
+                                <fieldset class="fieldset">
+                                    <legend class="fieldset-legend">{{ t('admin.startDate') }}</legend>
+                                    <input
+                                        type="date"
+                                        v-model="form.start_date"
+                                        class="input w-full"
+                                        :class="{ 'input-error': form.errors.start_date }"
+                                    />
+                                    <p v-if="form.errors.start_date" class="label text-error">
+                                        {{ form.errors.start_date }}
+                                    </p>
+                                </fieldset>
+                            </div>
                         </div>
+                    </div>
 
-                        <!-- Contract Dates -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <fieldset class="fieldset">
-                                <legend class="fieldset-legend">{{ t('admin.contractStart') }}</legend>
-                                <input
-                                    type="date"
-                                    v-model="form.contract_start_date"
-                                    class="input w-full"
-                                    :class="{ 'input-error': form.errors.contract_start_date }"
-                                />
-                                <p v-if="form.errors.contract_start_date" class="label text-error">
-                                    {{ form.errors.contract_start_date }}
-                                </p>
-                            </fieldset>
+                    <!-- Personal Info Panel -->
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            <h2 class="card-title mb-4">{{ t('admin.personalInfo') }}</h2>
 
-                            <fieldset class="fieldset">
-                                <legend class="fieldset-legend">{{ t('admin.contractEnd') }}</legend>
-                                <input
-                                    type="date"
-                                    v-model="form.contract_end_date"
-                                    class="input w-full"
-                                    :class="{ 'input-error': form.errors.contract_end_date }"
-                                />
-                                <p v-if="form.errors.contract_end_date" class="label text-error">
-                                    {{ form.errors.contract_end_date }}
-                                </p>
-                            </fieldset>
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <fieldset class="fieldset">
+                                        <legend class="fieldset-legend">{{ t('admin.birthDate') }}</legend>
+                                        <input
+                                            type="date"
+                                            v-model="form.birth_date"
+                                            class="input w-full"
+                                            :class="{ 'input-error': form.errors.birth_date }"
+                                        />
+                                        <p v-if="form.errors.birth_date" class="label text-error">
+                                            {{ form.errors.birth_date }}
+                                        </p>
+                                    </fieldset>
+
+                                    <fieldset class="fieldset">
+                                        <legend class="fieldset-legend">{{ t('admin.bsn') }}</legend>
+                                        <input
+                                            type="password"
+                                            v-model="form.bsn"
+                                            class="input w-full"
+                                            :class="{ 'input-error': form.errors.bsn }"
+                                            maxlength="9"
+                                            placeholder="*********"
+                                        />
+                                        <p v-if="form.errors.bsn" class="label text-error">
+                                            {{ form.errors.bsn }}
+                                        </p>
+                                    </fieldset>
+                                </div>
+
+                                <fieldset class="fieldset">
+                                    <legend class="fieldset-legend">{{ t('admin.phone') }}</legend>
+                                    <input
+                                        type="tel"
+                                        v-model="form.phone"
+                                        class="input w-full"
+                                        :class="{ 'input-error': form.errors.phone }"
+                                    />
+                                    <p v-if="form.errors.phone" class="label text-error">
+                                        {{ form.errors.phone }}
+                                    </p>
+                                </fieldset>
+
+                                <fieldset class="fieldset">
+                                    <legend class="fieldset-legend">{{ t('admin.address') }}</legend>
+                                    <input
+                                        type="text"
+                                        v-model="form.address"
+                                        class="input w-full"
+                                        :class="{ 'input-error': form.errors.address }"
+                                    />
+                                    <p v-if="form.errors.address" class="label text-error">
+                                        {{ form.errors.address }}
+                                    </p>
+                                </fieldset>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <fieldset class="fieldset">
+                                        <legend class="fieldset-legend">{{ t('admin.city') }}</legend>
+                                        <input
+                                            type="text"
+                                            v-model="form.city"
+                                            class="input w-full"
+                                            :class="{ 'input-error': form.errors.city }"
+                                        />
+                                        <p v-if="form.errors.city" class="label text-error">
+                                            {{ form.errors.city }}
+                                        </p>
+                                    </fieldset>
+
+                                    <fieldset class="fieldset">
+                                        <legend class="fieldset-legend">{{ t('admin.postalCode') }}</legend>
+                                        <input
+                                            type="text"
+                                            v-model="form.postal_code"
+                                            class="input w-full"
+                                            :class="{ 'input-error': form.errors.postal_code }"
+                                            maxlength="10"
+                                        />
+                                        <p v-if="form.errors.postal_code" class="label text-error">
+                                            {{ form.errors.postal_code }}
+                                        </p>
+                                    </fieldset>
+                                </div>
+                            </div>
                         </div>
-
-                        <!-- Personal Info -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <fieldset class="fieldset">
-                                <legend class="fieldset-legend">{{ t('admin.birthDate') }}</legend>
-                                <input
-                                    type="date"
-                                    v-model="form.birth_date"
-                                    class="input w-full"
-                                    :class="{ 'input-error': form.errors.birth_date }"
-                                />
-                                <p v-if="form.errors.birth_date" class="label text-error">
-                                    {{ form.errors.birth_date }}
-                                </p>
-                            </fieldset>
-
-                            <fieldset class="fieldset">
-                                <legend class="fieldset-legend">{{ t('admin.startDate') }}</legend>
-                                <input
-                                    type="date"
-                                    v-model="form.start_date"
-                                    class="input w-full"
-                                    :class="{ 'input-error': form.errors.start_date }"
-                                />
-                                <p v-if="form.errors.start_date" class="label text-error">
-                                    {{ form.errors.start_date }}
-                                </p>
-                            </fieldset>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <fieldset class="fieldset">
-                                <legend class="fieldset-legend">{{ t('admin.bsn') }}</legend>
-                                <input
-                                    type="password"
-                                    v-model="form.bsn"
-                                    class="input w-full"
-                                    :class="{ 'input-error': form.errors.bsn }"
-                                    maxlength="9"
-                                    placeholder="*********"
-                                />
-                                <p v-if="form.errors.bsn" class="label text-error">
-                                    {{ form.errors.bsn }}
-                                </p>
-                            </fieldset>
-
-                            <fieldset class="fieldset">
-                                <legend class="fieldset-legend">{{ t('admin.phone') }}</legend>
-                                <input
-                                    type="tel"
-                                    v-model="form.phone"
-                                    class="input w-full"
-                                    :class="{ 'input-error': form.errors.phone }"
-                                />
-                                <p v-if="form.errors.phone" class="label text-error">
-                                    {{ form.errors.phone }}
-                                </p>
-                            </fieldset>
-                        </div>
-
-                        <!-- Address -->
-                        <fieldset class="fieldset">
-                            <legend class="fieldset-legend">{{ t('admin.address') }}</legend>
-                            <input
-                                type="text"
-                                v-model="form.address"
-                                class="input w-full"
-                                :class="{ 'input-error': form.errors.address }"
-                            />
-                            <p v-if="form.errors.address" class="label text-error">
-                                {{ form.errors.address }}
-                            </p>
-                        </fieldset>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <fieldset class="fieldset">
-                                <legend class="fieldset-legend">{{ t('admin.city') }}</legend>
-                                <input
-                                    type="text"
-                                    v-model="form.city"
-                                    class="input w-full"
-                                    :class="{ 'input-error': form.errors.city }"
-                                />
-                                <p v-if="form.errors.city" class="label text-error">
-                                    {{ form.errors.city }}
-                                </p>
-                            </fieldset>
-
-                            <fieldset class="fieldset">
-                                <legend class="fieldset-legend">{{ t('admin.postalCode') }}</legend>
-                                <input
-                                    type="text"
-                                    v-model="form.postal_code"
-                                    class="input w-full"
-                                    :class="{ 'input-error': form.errors.postal_code }"
-                                    maxlength="10"
-                                />
-                                <p v-if="form.errors.postal_code" class="label text-error">
-                                    {{ form.errors.postal_code }}
-                                </p>
-                            </fieldset>
-                        </div>
-
-                        <!-- Submit -->
-                        <div class="flex justify-end">
-                            <button type="submit" class="btn btn-primary" :disabled="form.processing">
-                                <span v-if="form.processing" class="loading loading-spinner loading-sm"></span>
-                                {{ form.processing ? t('common.saving') : t('common.save') }}
-                            </button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
-            </div>
+
+                <!-- Submit -->
+                <div class="flex justify-end">
+                    <button type="submit" class="btn btn-primary" :disabled="form.processing">
+                        <span v-if="form.processing" class="loading loading-spinner loading-sm"></span>
+                        {{ form.processing ? t('common.saving') : t('common.save') }}
+                    </button>
+                </div>
+            </form>
         </div>
-    </AuthenticatedLayout>
+    </AdminLayout>
 </template>

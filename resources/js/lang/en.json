@@ -9,6 +9,14 @@
         "preferences": "Preferences",
         "logOut": "Log Out"
     },
+    "adminNav": {
+        "overview": "Overview",
+        "users": "Users",
+        "schedule": "Schedule Board",
+        "leaveRequests": "Leave Requests",
+        "invitations": "Invitations",
+        "employeeView": "Employee View"
+    },
     "dashboard": {
         "title": "Dashboard",
         "addHours": "Add Hours",
@@ -142,7 +150,15 @@
         "pendingApprovalCount": "pending approvals",
         "pendingLeaveCount": "pending leave requests",
         "expiringContractsCount": "expiring contracts",
-        "estimatedCost": "Est. Cost"
+        "estimatedCost": "Est. Cost",
+        "searchUsers": "Search users...",
+        "profileStatus": "Profile",
+        "noUsersFound": "No users found.",
+        "contractInfo": "Contract & Financial",
+        "personalInfo": "Personal Information",
+        "shifts": "Shifts",
+        "approvedHours": "Approved Hours",
+        "viewShifts": "View Shifts"
     },
     "invitations": {
         "title": "Manage Invitations",
@@ -284,6 +300,12 @@
         "information": "Profile Information",
         "informationDescription": "Update your account's profile information and email address.",
         "name": "Name",
+        "personalDetails": "Personal Details",
+        "phone": "Phone Number",
+        "birthDate": "Date of Birth",
+        "address": "Address",
+        "city": "City",
+        "postalCode": "Postal Code",
         "emailUnverified": "Your email address is unverified.",
         "resendVerification": "Click here to re-send the verification email.",
         "verificationSent": "A new verification link has been sent to your email address.",

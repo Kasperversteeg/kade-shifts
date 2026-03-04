@@ -3,7 +3,7 @@ import { ref, computed } from 'vue';
 import { Head, router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import { VueDraggable } from 'vue-draggable-plus';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 import WeekNavigator from '@/Components/WeekNavigator.vue';
 import ShiftCard from '@/Components/ShiftCard.vue';
 import ShiftModal from '@/Components/ShiftModal.vue';
@@ -123,7 +123,7 @@ const publishWeek = (): void => {
 <template>
     <Head :title="t('schedule.scheduleBoard')" />
 
-    <AuthenticatedLayout>
+    <AdminLayout>
         <div class="space-y-4">
             <div class="card bg-base-100 shadow-xl">
                 <div class="card-body">
@@ -209,5 +209,5 @@ const publishWeek = (): void => {
             @confirm="deleteShift"
             @cancel="showDeleteConfirm = false; deletingShift = null"
         />
-    </AuthenticatedLayout>
+    </AdminLayout>
 </template>

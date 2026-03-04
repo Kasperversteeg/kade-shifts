@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 import MonthNavigator from '@/Components/MonthNavigator.vue';
 import HoursSummary from '@/Components/HoursSummary.vue';
 import TimeEntryCard from '@/Components/TimeEntryCard.vue';
@@ -79,7 +79,7 @@ const submitRecovery = (sickLeaveId: number): void => {
 <template>
     <Head :title="`${user.name}`" />
 
-    <AuthenticatedLayout>
+    <AdminLayout>
         <div class="space-y-4">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
@@ -315,5 +315,5 @@ const submitRecovery = (sickLeaveId: number): void => {
             @confirm="deleteDocument"
             @cancel="deletingDocument = null"
         />
-    </AuthenticatedLayout>
+    </AdminLayout>
 </template>

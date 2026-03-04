@@ -27,6 +27,14 @@ class HandleInertiaRequests extends Middleware
      *
      * @return array<string, mixed>
      */
+    private function detectBrowserLocale(Request $request): string
+    {
+        $supported = ['en', 'nl'];
+        $preferred = $request->getPreferredLanguage($supported);
+
+        return $preferred ?? 'en';
+    }
+
     public function share(Request $request): array
     {
         return [
@@ -37,7 +45,8 @@ class HandleInertiaRequests extends Middleware
                     ['role' => $request->user()->roles->first()?->name]
                 ) : null,
             ],
-            'locale' => $request->user()?->preferences['language'] ?? 'en',
+            'locale' => $request->user()?->preferences['language']
+                ?? $this->detectBrowserLocale($request),
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
                 'error' => fn () => $request->session()->get('error'),

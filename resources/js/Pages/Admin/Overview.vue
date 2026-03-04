@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 import MonthNavigator from '@/Components/MonthNavigator.vue';
 import { Head, Link, useForm, router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
@@ -40,23 +40,20 @@ const setActiveFilter = (filter: string): void => {
 
     <Head :title="t('admin.overview')" />
 
-    <AuthenticatedLayout>
+    <AdminLayout>
         <div class="space-y-4">
-            <div class="flex justify-between items-center">
-                <h1 class="text-2xl font-bold">{{ t('admin.overview') }}</h1>
-                <Link :href="route('admin.invitations')" class="btn btn-outline btn-sm">
-                    {{ t('admin.manageInvitations') }}
-                </Link>
-            </div>
+            <h1 class="text-2xl font-bold">{{ t('admin.overview') }}</h1>
 
             <MonthNavigator :current-month="currentMonth" />
 
             <!-- Alert Cards -->
-            <div v-if="pendingApprovals > 0 || pendingLeaveRequests > 0 || expiringContracts > 0" class="grid grid-cols-1 md:grid-cols-3 gap-2">
+            <div v-if="pendingApprovals > 0 || pendingLeaveRequests > 0 || expiringContracts > 0"
+                class="grid grid-cols-1 md:grid-cols-3 gap-2">
                 <Link v-if="pendingApprovals > 0" :href="route('admin.overview')" class="alert alert-warning shadow-sm">
                     <span>{{ pendingApprovals }} {{ t('admin.pendingApprovalCount') }}</span>
                 </Link>
-                <Link v-if="pendingLeaveRequests > 0" :href="route('admin.leave.index')" class="alert alert-info shadow-sm">
+                <Link v-if="pendingLeaveRequests > 0" :href="route('admin.leave.index')"
+                    class="alert alert-info shadow-sm">
                     <span>{{ pendingLeaveRequests }} {{ t('admin.pendingLeaveCount') }}</span>
                 </Link>
                 <div v-if="expiringContracts > 0" class="alert alert-error shadow-sm">
@@ -91,25 +88,18 @@ const setActiveFilter = (filter: string): void => {
                         <div class="flex items-center gap-4 mb-2 md:mb-0">
                             <h2 class="card-title">{{ t('admin.userHours') }}</h2>
                             <div class="join">
-                                <button
-                                    class="btn btn-xs join-item"
+                                <button class="btn btn-xs join-item"
                                     :class="{ 'btn-active': activeFilter === 'active' }"
-                                    @click="setActiveFilter('active')"
-                                >
+                                    @click="setActiveFilter('active')">
                                     {{ t('admin.filterActive') }}
                                 </button>
-                                <button
-                                    class="btn btn-xs join-item"
+                                <button class="btn btn-xs join-item"
                                     :class="{ 'btn-active': activeFilter === 'inactive' }"
-                                    @click="setActiveFilter('inactive')"
-                                >
+                                    @click="setActiveFilter('inactive')">
                                     {{ t('admin.filterInactive') }}
                                 </button>
-                                <button
-                                    class="btn btn-xs join-item"
-                                    :class="{ 'btn-active': activeFilter === 'all' }"
-                                    @click="setActiveFilter('all')"
-                                >
+                                <button class="btn btn-xs join-item" :class="{ 'btn-active': activeFilter === 'all' }"
+                                    @click="setActiveFilter('all')">
                                     {{ t('admin.filterAll') }}
                                 </button>
                             </div>
@@ -135,9 +125,9 @@ const setActiveFilter = (filter: string): void => {
                                 <tr>
                                     <th>{{ t('admin.name') }}</th>
                                     <th>{{ t('admin.email') }}</th>
-                                    <th class="text-center">{{ t('invitations.status') }}</th>
                                     <th class="text-right">{{ t('admin.entries') }}</th>
                                     <th class="text-right">{{ t('admin.totalHours') }}</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -148,34 +138,27 @@ const setActiveFilter = (filter: string): void => {
                                                 class="link link-hover link-primary">
                                                 {{ user.name }}
                                             </Link>
-                                            <span v-if="!user.is_active" class="badge badge-error badge-xs">{{ t('admin.inactive') }}</span>
+                                            <span v-if="!user.is_active" class="badge badge-error badge-xs">{{
+                                                t('admin.inactive') }}</span>
                                         </div>
                                     </td>
                                     <td>{{ user.email }}</td>
-                                    <td class="text-center">
-                                        <div class="flex gap-1 justify-center flex-wrap">
-                                            <span v-if="user.status_counts.submitted" class="badge badge-warning badge-sm">
-                                                {{ user.status_counts.submitted }} {{ t('status.submitted') }}
-                                            </span>
-                                            <span v-if="user.status_counts.approved" class="badge badge-success badge-sm">
-                                                {{ user.status_counts.approved }} {{ t('status.approved') }}
-                                            </span>
-                                            <span v-if="user.status_counts.draft" class="badge badge-ghost badge-sm">
-                                                {{ user.status_counts.draft }} {{ t('status.draft') }}
-                                            </span>
-                                            <span v-if="user.status_counts.rejected" class="badge badge-error badge-sm">
-                                                {{ user.status_counts.rejected }} {{ t('status.rejected') }}
-                                            </span>
-                                        </div>
-                                    </td>
                                     <td class="text-right">{{ user.entries_count }}</td>
                                     <td class="text-right">
                                         <span class="badge badge-primary">{{ user.total_hours }}{{
                                             t('summary.hoursUnit') }}</span>
                                     </td>
+                                    <td>
+                                        <Link :href="route('admin.user-shifts', { user: user.id, month: currentMonth })" class="btn btn-ghost btn-xs">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
+                                            {{ t('admin.viewShifts') }}
+                                        </Link>
+                                    </td>
                                 </tr>
                                 <tr v-if="users.length === 0">
-                                    <td colspan="5" class="text-center opacity-60">
+                                    <td colspan="6" class="text-center opacity-60">
                                         {{ t('admin.noUsersThisMonth') }}
                                     </td>
                                 </tr>
@@ -184,6 +167,7 @@ const setActiveFilter = (filter: string): void => {
                                 <tr class="font-bold">
                                     <td colspan="4" class="text-right">{{ t('admin.total') }}</td>
                                     <td class="text-right">{{ grandTotal }}{{ t('summary.hoursUnit') }}</td>
+                                    <td></td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -191,5 +175,5 @@ const setActiveFilter = (filter: string): void => {
                 </div>
             </div>
         </div>
-    </AuthenticatedLayout>
+    </AdminLayout>
 </template>

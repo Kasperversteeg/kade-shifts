@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 import RejectLeaveModal from '@/Components/RejectLeaveModal.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
@@ -31,7 +31,7 @@ const statusBadgeClass = (status: string): string => {
 <template>
     <Head :title="t('admin.leaveRequests')" />
 
-    <AuthenticatedLayout>
+    <AdminLayout>
         <div class="space-y-4">
             <div class="flex items-center gap-2">
                 <Link :href="route('admin.overview')" class="btn btn-ghost btn-sm">
@@ -114,5 +114,5 @@ const statusBadgeClass = (status: string): string => {
             :leave-request-id="rejectingRequest?.id ?? null"
             @close="rejectingRequest = null"
         />
-    </AuthenticatedLayout>
+    </AdminLayout>
 </template>
