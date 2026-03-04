@@ -6,10 +6,33 @@ export interface User {
     email_verified_at: string | null;
     google_id: string | null;
     preferences: UserPreferences | null;
+    is_active?: boolean;
+    hourly_rate?: string | null;
+    contract_type?: string | null;
+    contract_start_date?: string | null;
+    contract_end_date?: string | null;
+    phone?: string | null;
+    profile_completeness?: { percentage: number; missing: string[] };
 }
 
 export interface UserPreferences {
     language?: 'en' | 'nl';
+}
+
+export type TimeEntryStatus = 'draft' | 'submitted' | 'approved' | 'rejected';
+
+export interface AtwWarning {
+    type: string;
+    message: string;
+    hours?: number;
+}
+
+export interface WeeklyTotal {
+    week: number;
+    weekStart: string;
+    weekEnd: string;
+    totalHours: number;
+    warnings: AtwWarning[];
 }
 
 export interface TimeEntry {
@@ -21,6 +44,11 @@ export interface TimeEntry {
     break_minutes: number;
     total_hours: number;
     notes: string | null;
+    status: TimeEntryStatus;
+    rejection_reason: string | null;
+    reviewed_by: number | null;
+    reviewed_at: string | null;
+    atw_warnings?: AtwWarning[];
     created_at: string;
     updated_at: string;
 }
@@ -37,6 +65,75 @@ export interface Invitation {
     updated_at: string;
 }
 
+export type DocumentType = 'id_front' | 'id_back' | 'contract_signed' | 'other';
+
+export interface Document {
+    id: number;
+    type: DocumentType;
+    original_filename: string;
+    mime_type: string;
+    file_size: number;
+    uploaded_by: number | null;
+    uploader_name?: string;
+    created_at: string;
+}
+
+export type LeaveRequestType = 'vakantie' | 'bijzonder_verlof' | 'onbetaald_verlof';
+export type LeaveRequestStatus = 'pending' | 'approved' | 'rejected';
+
+export interface LeaveRequest {
+    id: number;
+    type: LeaveRequestType;
+    start_date: string;
+    end_date: string;
+    days: number;
+    reason: string | null;
+    status: LeaveRequestStatus;
+    rejection_reason: string | null;
+    reviewer_name: string | null;
+    reviewed_at: string | null;
+    created_at: string;
+    // admin-only fields
+    user_id?: number;
+    user_name?: string;
+    user_email?: string;
+}
+
+export interface LeaveBalance {
+    total: number;
+    used: number;
+    remaining: number;
+}
+
+export interface SickLeave {
+    id: number;
+    start_date: string;
+    end_date: string | null;
+    days: number;
+    notes: string | null;
+    is_active: boolean;
+    registrar_name: string | null;
+    created_at: string;
+}
+
+export interface Shift {
+    id: number;
+    date: string;
+    start_time: string;
+    end_time: string;
+    user_id: number | null;
+    user_name: string | null;
+    position: string | null;
+    notes: string | null;
+    published: boolean;
+    planned_hours: number;
+}
+
+export interface ScheduleEmployee {
+    id: number;
+    name: string;
+}
+
 export interface PageProps {
     auth: {
         user: User;
@@ -48,9 +145,20 @@ export interface PageProps {
     locale: string;
 }
 
+export interface StatusCounts {
+    draft: number;
+    submitted: number;
+    approved: number;
+    rejected: number;
+}
+
 export interface UserWithHours {
     id: number;
     name: string;
     email: string;
+    is_active: boolean;
     total_hours: number;
+    entries_count: number;
+    hourly_rate: number;
+    status_counts: StatusCounts;
 }

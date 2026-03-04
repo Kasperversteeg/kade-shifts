@@ -51,6 +51,12 @@ watch(() => page.props.flash, (flash) => {
                         <li>
                             <Link :href="route('time-entries.index')">{{ $t('nav.myHours') }}</Link>
                         </li>
+                        <li>
+                            <Link :href="route('leave.index')">{{ $t('nav.leave') }}</Link>
+                        </li>
+                        <li>
+                            <Link :href="route('schedule.index')">{{ $t('nav.schedule') }}</Link>
+                        </li>
                         <li v-if="isAdmin">
                             <Link :href="route('admin.overview')">{{ $t('nav.admin') }}</Link>
                         </li>
@@ -71,6 +77,18 @@ watch(() => page.props.flash, (flash) => {
                         <Link :href="route('time-entries.index')"
                             :class="{ 'active': route().current('time-entries.*') }">
                             {{ $t('nav.myHours') }}
+                        </Link>
+                    </li>
+                    <li>
+                        <Link :href="route('leave.index')"
+                            :class="{ 'active': route().current('leave.*') }">
+                            {{ $t('nav.leave') }}
+                        </Link>
+                    </li>
+                    <li>
+                        <Link :href="route('schedule.index')"
+                            :class="{ 'active': route().current('schedule.*') }">
+                            {{ $t('nav.schedule') }}
                         </Link>
                     </li>
                     <li v-if="isAdmin">

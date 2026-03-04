@@ -18,9 +18,20 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+        $documents = $request->user()->documents()->latest()->get()->map(fn ($doc) => [
+            'id' => $doc->id,
+            'type' => $doc->type,
+            'original_filename' => $doc->original_filename,
+            'mime_type' => $doc->mime_type,
+            'file_size' => $doc->file_size,
+            'uploaded_by' => $doc->uploaded_by,
+            'created_at' => $doc->created_at->format('Y-m-d'),
+        ]);
+
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
+            'documents' => $documents,
         ]);
     }
 

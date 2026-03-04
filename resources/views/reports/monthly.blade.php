@@ -31,6 +31,7 @@
                         <th>End</th>
                         <th class="text-right">Break (min)</th>
                         <th class="text-right">Hours</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -41,10 +42,11 @@
                             <td>{{ substr($entry->shift_end, 0, 5) }}</td>
                             <td class="text-right">{{ $entry->break_minutes }}</td>
                             <td class="text-right">{{ $entry->total_hours }}</td>
+                            <td>{{ ucfirst($entry->status) }}</td>
                         </tr>
                     @endforeach
                     <tr class="total-row">
-                        <td colspan="4" class="text-right">Total:</td>
+                        <td colspan="5" class="text-right">Total:</td>
                         <td class="text-right">{{ $user->timeEntries->sum('total_hours') }}h</td>
                     </tr>
                 </tbody>
