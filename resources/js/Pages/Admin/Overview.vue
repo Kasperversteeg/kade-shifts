@@ -49,7 +49,7 @@ const setActiveFilter = (filter: string): void => {
             <!-- Alert Cards -->
             <div v-if="pendingApprovals > 0 || pendingLeaveRequests > 0 || expiringContracts > 0"
                 class="grid grid-cols-1 md:grid-cols-3 gap-2">
-                <Link v-if="pendingApprovals > 0" :href="route('admin.overview')" class="alert alert-warning shadow-sm">
+                <Link v-if="pendingApprovals > 0" :href="route('admin.approvals')" class="alert alert-warning shadow-sm">
                     <span>{{ pendingApprovals }} {{ t('admin.pendingApprovalCount') }}</span>
                 </Link>
                 <Link v-if="pendingLeaveRequests > 0" :href="route('admin.leave.index')"

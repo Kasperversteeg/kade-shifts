@@ -3,10 +3,67 @@
 namespace App\Http\Controllers;
 
 use App\Models\TimeEntry;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ApprovalController extends Controller
 {
+    public function index(Request $request)
+    {
+        $month = $request->get('month', Carbon::now()->format('Y-m'));
+        $date = Carbon::parse($month . '-01');
+        $statusFilter = $request->get('status', 'submitted');
+
+        $query = TimeEntry::with('user:id,name,email')
+            ->whereYear('date', $date->year)
+            ->whereMonth('date', $date->month);
+
+        if ($statusFilter !== 'all') {
+            $query->where('status', $statusFilter);
+        }
+
+        $entries = $query->orderBy('date')->orderBy('shift_start')->get()->map(fn($entry) => [
+            'id' => $entry->id,
+            'user_id' => $entry->user_id,
+            'user_name' => $entry->user->name,
+            'user_email' => $entry->user->email,
+            'date' => $entry->date,
+            'shift_start' => $entry->shift_start,
+            'shift_end' => $entry->shift_end,
+            'break_minutes' => $entry->break_minutes,
+            'total_hours' => $entry->total_hours,
+            'notes' => $entry->notes,
+            'status' => $entry->status,
+            'rejection_reason' => $entry->rejection_reason,
+        ]);
+
+        $allEntries = TimeEntry::whereYear('date', $date->year)
+            ->whereMonth('date', $date->month);
+
+        $statusCounts = [
+            'submitted' => (clone $allEntries)->where('status', 'submitted')->count(),
+            'approved' => (clone $allEntries)->where('status', 'approved')->count(),
+            'rejected' => (clone $allEntries)->where('status', 'rejected')->count(),
+            'draft' => (clone $allEntries)->where('status', 'draft')->count(),
+        ];
+
+        $submittedIds = TimeEntry::whereYear('date', $date->year)
+            ->whereMonth('date', $date->month)
+            ->where('status', 'submitted')
+            ->pluck('id')
+            ->values()
+            ->all();
+
+        return Inertia::render('Admin/Approvals', [
+            'entries' => $entries,
+            'statusCounts' => $statusCounts,
+            'currentMonth' => $month,
+            'activeStatus' => $statusFilter,
+            'submittedEntryIds' => $submittedIds,
+        ]);
+    }
+
     public function approve(TimeEntry $timeEntry)
     {
         if (!$timeEntry->isSubmitted()) {

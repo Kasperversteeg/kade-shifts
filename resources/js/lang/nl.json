@@ -15,6 +15,7 @@
         "schedule": "Roosterbord",
         "leaveRequests": "Verlofaanvragen",
         "invitations": "Uitnodigingen",
+        "approvals": "Goedkeuringen",
         "employeeView": "Medewerker weergave"
     },
     "dashboard": {
@@ -154,6 +155,8 @@
         "searchUsers": "Zoek medewerkers...",
         "profileStatus": "Profiel",
         "noUsersFound": "Geen medewerkers gevonden.",
+        "approvals": "Goedkeuringen",
+        "timeEntries": "Urenregistraties",
         "contractInfo": "Contract & Financieel",
         "personalInfo": "Persoonlijke Gegevens",
         "shifts": "Diensten",

@@ -51,6 +51,9 @@ watch(() => page.props.flash, (flash) => {
                             <Link :href="route('admin.users')">{{ $t('adminNav.users') }}</Link>
                         </li>
                         <li>
+                            <Link :href="route('admin.approvals')">{{ $t('adminNav.approvals') }}</Link>
+                        </li>
+                        <li>
                             <Link :href="route('admin.schedule')">{{ $t('adminNav.schedule') }}</Link>
                         </li>
                         <li>
@@ -81,6 +84,12 @@ watch(() => page.props.flash, (flash) => {
                         <Link :href="route('admin.users')"
                             :class="{ 'active bg-neutral-focus': route().current('admin.users') || route().current('admin.user-detail') || route().current('admin.user-edit') || route().current('admin.user-shifts') }">
                             {{ $t('adminNav.users') }}
+                        </Link>
+                    </li>
+                    <li>
+                        <Link :href="route('admin.approvals')"
+                            :class="{ 'active bg-neutral-focus': route().current('admin.approvals') }">
+                            {{ $t('adminNav.approvals') }}
                         </Link>
                     </li>
                     <li>

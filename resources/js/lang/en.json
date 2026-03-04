@@ -15,6 +15,7 @@
         "schedule": "Schedule Board",
         "leaveRequests": "Leave Requests",
         "invitations": "Invitations",
+        "approvals": "Approvals",
         "employeeView": "Employee View"
     },
     "dashboard": {
@@ -154,6 +155,8 @@
         "searchUsers": "Search users...",
         "profileStatus": "Profile",
         "noUsersFound": "No users found.",
+        "approvals": "Approvals",
+        "timeEntries": "Time Entries",
         "contractInfo": "Contract & Financial",
         "personalInfo": "Personal Information",
         "shifts": "Shifts",

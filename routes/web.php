@@ -74,6 +74,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/export/pdf', [AdminController::class, 'exportPdf'])->name('admin.export-pdf');
         Route::get('/invitations', [InvitationController::class, 'index'])->name('admin.invitations');
         Route::post('/invitations', [InvitationController::class, 'store'])->name('admin.invitations.store');
+        Route::get('/approvals', [ApprovalController::class, 'index'])->name('admin.approvals');
         Route::post('/entries/{time_entry}/approve', [ApprovalController::class, 'approve'])->name('admin.entries.approve');
         Route::post('/entries/{time_entry}/reject', [ApprovalController::class, 'reject'])->name('admin.entries.reject');
         Route::post('/entries/bulk-approve', [ApprovalController::class, 'bulkApprove'])->name('admin.entries.bulk-approve');
