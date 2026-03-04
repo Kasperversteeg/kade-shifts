@@ -12,7 +12,6 @@ interface Toast {
 
 const page = usePage<PageProps>();
 const user = computed<User>(() => page.props.auth.user);
-const isAdmin = computed<boolean>(() => user.value?.role === 'admin');
 
 const toasts = ref<Toast[]>([]);
 
@@ -32,8 +31,8 @@ watch(() => page.props.flash, (flash) => {
 
 <template>
     <div class="min-h-screen bg-base-200">
-        <!-- Navbar -->
-        <div class="navbar bg-base-100 shadow-lg pt-[env(safe-area-inset-top)]">
+        <!-- Admin Navbar -->
+        <div class="navbar bg-neutral text-neutral-content pt-[env(safe-area-inset-top)]">
             <div class="navbar-start">
                 <div class="dropdown">
                     <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
@@ -44,61 +43,73 @@ watch(() => page.props.flash, (flash) => {
                         </svg>
                     </div>
                     <ul tabindex="0"
-                        class="menu menu-sm dropdown-content mt-3 z-1 p-2 shadow bg-base-100 rounded-box w-52">
+                        class="menu menu-sm dropdown-content mt-3 z-1 p-2 shadow bg-neutral rounded-box w-52">
                         <li>
-                            <Link :href="route('dashboard')">{{ $t('nav.dashboard') }}</Link>
+                            <Link :href="route('admin.overview')">{{ $t('adminNav.overview') }}</Link>
                         </li>
                         <li>
-                            <Link :href="route('time-entries.index')">{{ $t('nav.myHours') }}</Link>
+                            <Link :href="route('admin.users')">{{ $t('adminNav.users') }}</Link>
                         </li>
                         <li>
-                            <Link :href="route('leave.index')">{{ $t('nav.leave') }}</Link>
+                            <Link :href="route('admin.schedule')">{{ $t('adminNav.schedule') }}</Link>
                         </li>
                         <li>
-                            <Link :href="route('schedule.index')">{{ $t('nav.schedule') }}</Link>
+                            <Link :href="route('admin.leave.index')">{{ $t('adminNav.leaveRequests') }}</Link>
                         </li>
-                        <li v-if="isAdmin">
-                            <Link :href="route('admin.overview')" class="font-semibold">{{ $t('nav.admin') }}</Link>
+                        <li>
+                            <Link :href="route('admin.invitations')">{{ $t('adminNav.invitations') }}</Link>
+                        </li>
+                        <li class="border-t border-neutral-content/20 mt-2 pt-2">
+                            <Link :href="route('dashboard')">{{ $t('adminNav.employeeView') }}</Link>
                         </li>
                     </ul>
                 </div>
-                <Link :href="route('dashboard')" class="btn btn-ghost text-xl">
+                <Link :href="route('admin.overview')" class="btn btn-ghost text-xl">
                     Kade Shifts
+                    <span class="badge badge-sm badge-outline">Admin</span>
                 </Link>
             </div>
             <div class="navbar-center hidden lg:flex">
                 <ul class="menu menu-horizontal px-1">
                     <li>
-                        <Link :href="route('dashboard')" :class="{ 'active': route().current('dashboard') }">
-                            {{ $t('nav.dashboard') }}
+                        <Link :href="route('admin.overview')"
+                            :class="{ 'active bg-neutral-focus': route().current('admin.overview') }">
+                            {{ $t('adminNav.overview') }}
                         </Link>
                     </li>
                     <li>
-                        <Link :href="route('time-entries.index')"
-                            :class="{ 'active': route().current('time-entries.*') }">
-                            {{ $t('nav.myHours') }}
+                        <Link :href="route('admin.users')"
+                            :class="{ 'active bg-neutral-focus': route().current('admin.users') || route().current('admin.user-detail') || route().current('admin.user-edit') }">
+                            {{ $t('adminNav.users') }}
                         </Link>
                     </li>
                     <li>
-                        <Link :href="route('leave.index')"
-                            :class="{ 'active': route().current('leave.*') }">
-                            {{ $t('nav.leave') }}
+                        <Link :href="route('admin.schedule')"
+                            :class="{ 'active bg-neutral-focus': route().current('admin.schedule') || route().current('admin.shifts.*') }">
+                            {{ $t('adminNav.schedule') }}
                         </Link>
                     </li>
                     <li>
-                        <Link :href="route('schedule.index')"
-                            :class="{ 'active': route().current('schedule.*') }">
-                            {{ $t('nav.schedule') }}
+                        <Link :href="route('admin.leave.index')"
+                            :class="{ 'active bg-neutral-focus': route().current('admin.leave.*') }">
+                            {{ $t('adminNav.leaveRequests') }}
                         </Link>
                     </li>
-                    <li v-if="isAdmin">
-                        <Link :href="route('admin.overview')" :class="{ 'active': route().current('admin.*') }">
-                            {{ $t('nav.admin') }}
+                    <li>
+                        <Link :href="route('admin.invitations')"
+                            :class="{ 'active bg-neutral-focus': route().current('admin.invitations') }">
+                            {{ $t('adminNav.invitations') }}
                         </Link>
                     </li>
                 </ul>
             </div>
             <div class="navbar-end gap-1">
+                <Link :href="route('dashboard')" class="btn btn-ghost btn-sm gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
+                    </svg>
+                    <span class="hidden sm:inline">{{ $t('adminNav.employeeView') }}</span>
+                </Link>
                 <ThemeToggle />
                 <div class="dropdown dropdown-end">
                     <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar placeholder">
@@ -107,7 +118,7 @@ watch(() => page.props.flash, (flash) => {
                         </div>
                     </div>
                     <ul tabindex="0"
-                        class="menu menu-sm dropdown-content mt-3 z-1 p-2 shadow bg-base-100 rounded-box w-52">
+                        class="menu menu-sm dropdown-content mt-3 z-1 p-2 shadow bg-base-100 text-base-content rounded-box w-52">
                         <li class="menu-title">{{ user.name }}</li>
                         <li>
                             <Link :href="route('profile.edit')">{{ $t('nav.profile') }}</Link>

@@ -12,6 +12,10 @@ export interface User {
     contract_start_date?: string | null;
     contract_end_date?: string | null;
     phone?: string | null;
+    birth_date?: string | null;
+    address?: string | null;
+    city?: string | null;
+    postal_code?: string | null;
     profile_completeness?: { percentage: number; missing: string[] };
 }
 

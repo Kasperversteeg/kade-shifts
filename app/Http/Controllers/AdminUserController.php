@@ -8,6 +8,32 @@ use Inertia\Inertia;
 
 class AdminUserController extends Controller
 {
+    public function index()
+    {
+        $users = User::role('user')
+            ->orderBy('name')
+            ->get()
+            ->map(fn (User $user) => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'is_active' => $user->is_active,
+                'hourly_rate' => $user->hourly_rate,
+                'contract_type' => $user->contract_type,
+                'contract_start_date' => $user->contract_start_date?->toDateString(),
+                'contract_end_date' => $user->contract_end_date?->toDateString(),
+                'birth_date' => $user->birth_date?->toDateString(),
+                'start_date' => $user->start_date?->toDateString(),
+                'city' => $user->city,
+                'profile_completeness' => $user->profileCompleteness,
+            ]);
+
+        return Inertia::render('Admin/Users', [
+            'users' => $users,
+        ]);
+    }
+
     public function edit(User $user)
     {
         return Inertia::render('Admin/UserEdit', [

@@ -63,6 +63,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/schedule/publish', [ShiftController::class, 'publish'])->name('admin.schedule.publish');
 
         Route::get('/overview', [AdminController::class, 'overview'])->name('admin.overview');
+        Route::get('/users', [AdminUserController::class, 'index'])->name('admin.users');
         Route::get('/users/{user}', [AdminController::class, 'userDetail'])->name('admin.user-detail');
         Route::get('/users/{user}/edit', [AdminUserController::class, 'edit'])->name('admin.user-edit');
         Route::patch('/users/{user}', [AdminUserController::class, 'update'])->name('admin.user-update');

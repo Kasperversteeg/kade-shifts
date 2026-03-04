@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 import MonthNavigator from '@/Components/MonthNavigator.vue';
 import { Head, Link, useForm, router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
@@ -40,14 +40,9 @@ const setActiveFilter = (filter: string): void => {
 
     <Head :title="t('admin.overview')" />
 
-    <AuthenticatedLayout>
+    <AdminLayout>
         <div class="space-y-4">
-            <div class="flex justify-between items-center">
-                <h1 class="text-2xl font-bold">{{ t('admin.overview') }}</h1>
-                <Link :href="route('admin.invitations')" class="btn btn-outline btn-sm">
-                    {{ t('admin.manageInvitations') }}
-                </Link>
-            </div>
+            <h1 class="text-2xl font-bold">{{ t('admin.overview') }}</h1>
 
             <MonthNavigator :current-month="currentMonth" />
 
@@ -191,5 +186,5 @@ const setActiveFilter = (filter: string): void => {
                 </div>
             </div>
         </div>
-    </AuthenticatedLayout>
+    </AdminLayout>
 </template>

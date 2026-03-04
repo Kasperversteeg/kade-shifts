@@ -9,6 +9,14 @@
         "preferences": "Voorkeuren",
         "logOut": "Uitloggen"
     },
+    "adminNav": {
+        "overview": "Overzicht",
+        "users": "Medewerkers",
+        "schedule": "Roosterbord",
+        "leaveRequests": "Verlofaanvragen",
+        "invitations": "Uitnodigingen",
+        "employeeView": "Medewerker weergave"
+    },
     "dashboard": {
         "title": "Dashboard",
         "addHours": "Uren Toevoegen",
@@ -142,7 +150,12 @@
         "pendingApprovalCount": "openstaande goedkeuringen",
         "pendingLeaveCount": "openstaande verlofaanvragen",
         "expiringContractsCount": "aflopende contracten",
-        "estimatedCost": "Gesch. Kosten"
+        "estimatedCost": "Gesch. Kosten",
+        "searchUsers": "Zoek medewerkers...",
+        "profileStatus": "Profiel",
+        "noUsersFound": "Geen medewerkers gevonden.",
+        "contractInfo": "Contract & Financieel",
+        "personalInfo": "Persoonlijke Gegevens"
     },
     "invitations": {
         "title": "Uitnodigingen Beheren",
@@ -284,6 +297,12 @@
         "information": "Profielinformatie",
         "informationDescription": "Werk je profielinformatie en e-mailadres bij.",
         "name": "Naam",
+        "personalDetails": "Persoonlijke Gegevens",
+        "phone": "Telefoonnummer",
+        "birthDate": "Geboortedatum",
+        "address": "Adres",
+        "city": "Woonplaats",
+        "postalCode": "Postcode",
         "emailUnverified": "Je e-mailadres is niet geverifieerd.",
         "resendVerification": "Klik hier om de verificatie-e-mail opnieuw te versturen.",
         "verificationSent": "Er is een nieuwe verificatielink verstuurd naar je e-mailadres.",

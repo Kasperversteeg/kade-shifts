@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import dayjs from 'dayjs';
@@ -40,7 +40,7 @@ const getStatusClass = (invitation: Invitation): string => {
 
     <Head :title="t('invitations.title')" />
 
-    <AuthenticatedLayout>
+    <AdminLayout>
         <div class="space-y-4">
             <div class="flex justify-between items-center">
                 <h1 class="text-2xl font-bold">{{ t('invitations.title') }}</h1>
@@ -101,5 +101,5 @@ const getStatusClass = (invitation: Invitation): string => {
                 </div>
             </div>
         </div>
-    </AuthenticatedLayout>
+    </AdminLayout>
 </template>
