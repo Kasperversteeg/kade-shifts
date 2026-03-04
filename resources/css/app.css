@@ -32,6 +32,15 @@
     [data-theme="kade-dark"] .select {
         background-color: #363230 !important;
     }
+
+}
+
+.badge {
+    padding-inline: 0.75rem;
+}
+
+.badge-sm {
+    padding-inline: 0.625rem;
 }
 
 @plugin "daisyui/theme" {
