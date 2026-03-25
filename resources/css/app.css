@@ -43,6 +43,11 @@
     padding-inline: 0.625rem;
 }
 
+/* Drawer sidebar transition on mobile */
+.drawer-side {
+    transition: transform 0.2s ease-in-out;
+}
+
 @plugin "daisyui/theme" {
     name: "kade";
     default: true;
