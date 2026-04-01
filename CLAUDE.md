@@ -8,7 +8,7 @@ Hour registration web app for small teams (15-20 people). Users log daily work h
 
 ## Tech Stack
 
-- **Backend**: Laravel 11 (PHP 8.1+)
+- **Backend**: Laravel 12 (PHP 8.1+)
 - **Frontend**: Vue 3 (Composition API) + Inertia.js
 - **Styling**: Tailwind CSS + DaisyUI
 - **Database**: MySQL (via DDEV)
@@ -82,6 +82,27 @@ Invitation-based only — admin sends invite email with token (7-day expiry), us
 - Layouts in `resources/js/Layouts/` (AppLayout for authenticated, GuestLayout for auth pages)
 - Form validation via Laravel Form Request classes in `app/Http/Requests/`
 - No Vuex/Pinia — Inertia's server-driven props handle state
+
+## Agents
+
+Specialized agents are defined in `.claude/agents/` for delegating tasks:
+
+- **architect** — Architecture advisor. Use when planning new features, evaluating design decisions, or reviewing structural changes. Advises only, does not write code.
+- **backend-coder** — Laravel/PHP developer. Use for ALL backend tasks: controllers, models, migrations, routes, form requests, middleware, services, mail, tests, and anything in `app/` or `database/`.
+- **frontend-coder** — Vue 3/TypeScript developer. Use for ALL frontend tasks: pages, components, layouts, types, translations, and anything in `resources/js/`.
+- **designer** — UI/UX specialist. Use when creating new pages/components or updating visual designs. Outputs structural mockups with DaisyUI + Tailwind that the frontend-coder wires up.
+- **code-reviewer** — Automated code reviewer. Triggered after frontend-coder or backend-coder finish. Reviews for quality, security, and convention adherence.
+
+### Agent workflow
+1. **Planning**: Use `architect` to plan the feature and identify affected layers
+2. **Implementation**: Delegate to `backend-coder` and/or `frontend-coder` (can run in parallel for independent work)
+3. **Design**: Use `designer` when new UI is needed — designer creates the markup, frontend-coder adds logic
+4. **Review**: `code-reviewer` runs automatically after coder agents finish
+
+### Important constraints for agents
+- Agents cannot run `ddev` commands — they don't have container access
+- All agents should read `CLAUDE.md` before starting work
+- This is an Inertia.js monolith — no separate API layer, no Pinia stores, no client-side routing
 
 ## Deployment
 

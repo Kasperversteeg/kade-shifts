@@ -100,7 +100,7 @@ watch(() => page.props.flash, (flash) => {
                 </div>
 
                 <!-- Nav links -->
-                <ul class="menu flex-1 px-2 py-2 gap-0.5 text-neutral-content">
+                <ul class="menu flex-1 py-2 gap-0.5 text-neutral-content [&_li>a]:rounded-none">
                     <li>
                         <Link :href="route('admin.overview')"
                             :class="{ 'active bg-base-content/10': route().current('admin.overview') }">
@@ -117,6 +117,15 @@ watch(() => page.props.flash, (flash) => {
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                             </svg>
                             {{ $t('adminNav.users') }}
+                        </Link>
+                    </li>
+                    <li>
+                        <Link :href="route('admin.teams')"
+                            :class="{ 'active bg-base-content/10': route().current('admin.teams') }">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                            {{ $t('adminNav.teams') }}
                         </Link>
                     </li>
                     <li>
@@ -172,7 +181,7 @@ watch(() => page.props.flash, (flash) => {
                             <div class="text-sm font-medium truncate">{{ user.name }}</div>
                         </div>
                     </div>
-                    <ul class="menu menu-sm p-0 gap-0.5">
+                    <ul class="menu menu-sm p-0 gap-0.5 [&_li>a]:rounded-none [&_li>button]:rounded-none">
                         <li><Link :href="route('profile.edit')">{{ $t('nav.profile') }}</Link></li>
                         <li><Link :href="route('preferences.edit')">{{ $t('nav.preferences') }}</Link></li>
                         <li><Link :href="route('logout')" method="post" as="button">{{ $t('nav.logOut') }}</Link></li>

@@ -16,7 +16,8 @@
         "schedule": "Roosterbord",
         "leaveRequests": "Verlofaanvragen",
         "invitations": "Uitnodigingen",
-        "employeeView": "Medewerker weergave"
+        "employeeView": "Medewerker weergave",
+        "teams": "Teams"
     },
     "dashboard": {
         "title": "Dashboard",
@@ -161,6 +162,22 @@
         "approvedHours": "Goedgekeurde Uren",
         "viewShifts": "Bekijk Diensten"
     },
+    "teams": {
+        "title": "Teams",
+        "createTeam": "Team Aanmaken",
+        "editTeam": "Team Bewerken",
+        "name": "Teamnaam",
+        "description": "Beschrijving (optioneel)",
+        "members": "Leden",
+        "memberCount": "{count} lid | {count} leden",
+        "noTeams": "Nog geen teams aangemaakt.",
+        "searchTeams": "Zoek teams...",
+        "addMembers": "Leden toevoegen",
+        "noMembers": "Geen leden",
+        "deleteConfirm": "Weet je zeker dat je dit team wilt verwijderen?",
+        "createdAt": "Aangemaakt",
+        "other": "Overig"
+    },
     "invitations": {
         "title": "Uitnodigingen Beheren",
         "sendInvite": "Uitnodiging Versturen",
@@ -198,7 +215,8 @@
         "confirmDelete": "Verwijderen bevestigen",
         "confirmDeleteMessage": "Weet je zeker dat je dit wilt verwijderen? Dit kan niet ongedaan worden gemaakt.",
         "delete": "Verwijderen",
-        "saving": "Opslaan..."
+        "saving": "Opslaan...",
+        "close": "Sluiten"
     },
     "auth": {
         "login": "Inloggen",
@@ -294,7 +312,40 @@
         "saving": "Opslaan...",
         "save": "Opslaan",
         "update": "Bijwerken",
-        "allEmployees": "Alle Medewerkers"
+        "allEmployees": "Alle Medewerkers",
+        "monthOverview": "Maandoverzicht",
+        "workedHours": "Gewerkte Uren",
+        "leaveDays": "Verlofdagen",
+        "sickDays": "Ziektedagen",
+        "logHours": "Uren Registreren",
+        "noEventsThisMonth": "Geen activiteiten deze maand.",
+        "eventTypes": {
+            "shift": "Dienst",
+            "time_entry": "Uren",
+            "leave": "Verlof",
+            "sick": "Ziek"
+        }
+    },
+    "shiftPresets": {
+        "title": "Diensttypen",
+        "name": "Naam",
+        "shortName": "Afkorting",
+        "times": "Tijden",
+        "color": "Kleur",
+        "actions": "Acties",
+        "startTime": "Starttijd",
+        "endTime": "Eindtijd",
+        "sortOrder": "Volgorde",
+        "active": "Actief",
+        "inactive": "Inactief",
+        "addPreset": "Diensttype Toevoegen",
+        "editPreset": "Diensttype Bewerken",
+        "deleteConfirm": "Weet je zeker dat je dit diensttype wilt verwijderen?",
+        "noPresets": "Nog geen diensttypen aangemaakt.",
+        "namePlaceholder": "bijv. Dag",
+        "shortNamePlaceholder": "bijv. D",
+        "custom": "Aangepast",
+        "selectPreset": "Kies diensttype..."
     },
     "profile": {
         "title": "Profiel",
