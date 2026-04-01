@@ -67,7 +67,7 @@ class TimeEntryController extends Controller
             'break_minutes' => $validated['break_minutes'],
             'total_hours' => $totalHours,
             'notes' => $validated['notes'] ?? null,
-            'status' => 'draft',
+            'status' => 'submitted',
         ]);
 
         return redirect()->back()->with('success', __('Time entry added successfully!'));
@@ -80,7 +80,7 @@ class TimeEntryController extends Controller
         }
 
         if (!$timeEntry->isEditableByEmployee()) {
-            return redirect()->back()->with('error', __('Cannot edit approved or submitted entries.'));
+            return redirect()->back()->with('error', __('Cannot edit approved entries.'));
         }
 
         $validated = $request->validated();
@@ -98,45 +98,11 @@ class TimeEntryController extends Controller
             'break_minutes' => $validated['break_minutes'],
             'total_hours' => $totalHours,
             'notes' => $validated['notes'] ?? null,
-            'status' => 'draft',
-        ]);
-
-        return redirect()->back()->with('success', __('Time entry updated successfully!'));
-    }
-
-    public function submit(TimeEntry $timeEntry)
-    {
-        if ($timeEntry->user_id !== auth()->id()) {
-            abort(403);
-        }
-
-        if (!$timeEntry->isDraft() && !$timeEntry->isRejected()) {
-            return redirect()->back()->with('error', __('Entry cannot be submitted.'));
-        }
-
-        $timeEntry->update([
             'status' => 'submitted',
             'rejection_reason' => null,
         ]);
 
-        return redirect()->back()->with('success', __('Entry submitted for approval.'));
-    }
-
-    public function submitMonth(Request $request)
-    {
-        $month = $request->input('month', Carbon::now()->format('Y-m'));
-        $date = Carbon::parse($month . '-01');
-
-        $count = TimeEntry::where('user_id', auth()->id())
-            ->whereYear('date', $date->year)
-            ->whereMonth('date', $date->month)
-            ->whereIn('status', ['draft', 'rejected'])
-            ->update([
-                'status' => 'submitted',
-                'rejection_reason' => null,
-            ]);
-
-        return redirect()->back()->with('success', __(':count entries submitted for approval.', ['count' => $count]));
+        return redirect()->back()->with('success', __('Time entry updated successfully!'));
     }
 
     public function exportCsv(Request $request)
@@ -169,7 +135,7 @@ class TimeEntryController extends Controller
         }
 
         if (!$timeEntry->isEditableByEmployee()) {
-            return redirect()->back()->with('error', __('Cannot delete approved or submitted entries.'));
+            return redirect()->back()->with('error', __('Cannot delete approved entries.'));
         }
 
         $timeEntry->delete();

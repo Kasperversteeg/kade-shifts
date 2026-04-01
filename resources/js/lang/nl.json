@@ -17,7 +17,8 @@
         "leaveRequests": "Verlofaanvragen",
         "invitations": "Uitnodigingen",
         "employeeView": "Medewerker weergave",
-        "teams": "Teams"
+        "teams": "Teams",
+        "approvals": "Goedkeuringen"
     },
     "dashboard": {
         "title": "Dashboard",
@@ -160,7 +161,16 @@
         "personalInfo": "Persoonlijke Gegevens",
         "shifts": "Diensten",
         "approvedHours": "Goedgekeurde Uren",
-        "viewShifts": "Bekijk Diensten"
+        "viewShifts": "Bekijk Diensten",
+        "approvals": "Goedkeuringen",
+        "approveAll": "Alles Goedkeuren",
+        "approveSelected": "Selectie Goedkeuren",
+        "noPendingApprovals": "Geen openstaande goedkeuringen.",
+        "selectAll": "Alles selecteren",
+        "entry": "registratie",
+        "shift": "Dienst",
+        "hours": "Uren",
+        "notesColumn": "Notities"
     },
     "teams": {
         "title": "Teams",

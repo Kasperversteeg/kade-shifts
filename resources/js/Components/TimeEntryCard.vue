@@ -29,7 +29,7 @@ const formattedDate = computed<string>(() => {
 });
 
 const isEditable = computed<boolean>(() => {
-    return !props.readonly && (props.entry.status === 'draft' || props.entry.status === 'rejected');
+    return !props.readonly && props.entry.status !== 'approved';
 });
 
 const statusBadgeClass = computed<string>(() => {
@@ -50,9 +50,6 @@ const confirmDelete = (): void => {
     deleteForm.delete(route('time-entries.destroy', props.entry.id));
 };
 
-const submitEntry = (): void => {
-    router.post(route('time-entries.submit', props.entry.id));
-};
 </script>
 
 <template>
@@ -91,9 +88,6 @@ const submitEntry = (): void => {
 
                     <!-- Employee actions -->
                     <template v-if="isEditable">
-                        <button @click="submitEntry" class="btn btn-outline btn-success btn-xs">
-                            {{ t('timeEntries.submit') }}
-                        </button>
                         <button @click="emit('edit', entry)" class="btn btn-ghost btn-xs">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                 stroke="currentColor" class="w-4 h-4">

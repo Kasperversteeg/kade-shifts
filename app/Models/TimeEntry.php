@@ -63,7 +63,7 @@ class TimeEntry extends Model
 
     public function isEditableByEmployee(): bool
     {
-        return in_array($this->status, ['draft', 'rejected']);
+        return $this->status !== 'approved';
     }
 
     public static function calculateTotalHours($shiftStart, $shiftEnd, $breakMinutes): float
