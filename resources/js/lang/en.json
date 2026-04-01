@@ -16,7 +16,8 @@
         "schedule": "Schedule Board",
         "leaveRequests": "Leave Requests",
         "invitations": "Invitations",
-        "employeeView": "Employee View"
+        "employeeView": "Employee View",
+        "teams": "Teams"
     },
     "dashboard": {
         "title": "Dashboard",
@@ -160,6 +161,21 @@
         "shifts": "Shifts",
         "approvedHours": "Approved Hours",
         "viewShifts": "View Shifts"
+    },
+    "teams": {
+        "title": "Teams",
+        "createTeam": "Create Team",
+        "editTeam": "Edit Team",
+        "name": "Team Name",
+        "description": "Description (optional)",
+        "members": "Members",
+        "memberCount": "{count} member | {count} members",
+        "noTeams": "No teams created yet.",
+        "searchTeams": "Search teams...",
+        "addMembers": "Add members",
+        "noMembers": "No members",
+        "deleteConfirm": "Are you sure you want to delete this team?",
+        "createdAt": "Created"
     },
     "invitations": {
         "title": "Manage Invitations",

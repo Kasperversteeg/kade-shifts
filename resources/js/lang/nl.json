@@ -16,7 +16,8 @@
         "schedule": "Roosterbord",
         "leaveRequests": "Verlofaanvragen",
         "invitations": "Uitnodigingen",
-        "employeeView": "Medewerker weergave"
+        "employeeView": "Medewerker weergave",
+        "teams": "Teams"
     },
     "dashboard": {
         "title": "Dashboard",
@@ -160,6 +161,21 @@
         "shifts": "Diensten",
         "approvedHours": "Goedgekeurde Uren",
         "viewShifts": "Bekijk Diensten"
+    },
+    "teams": {
+        "title": "Teams",
+        "createTeam": "Team Aanmaken",
+        "editTeam": "Team Bewerken",
+        "name": "Teamnaam",
+        "description": "Beschrijving (optioneel)",
+        "members": "Leden",
+        "memberCount": "{count} lid | {count} leden",
+        "noTeams": "Nog geen teams aangemaakt.",
+        "searchTeams": "Zoek teams...",
+        "addMembers": "Leden toevoegen",
+        "noMembers": "Geen leden",
+        "deleteConfirm": "Weet je zeker dat je dit team wilt verwijderen?",
+        "createdAt": "Aangemaakt"
     },
     "invitations": {
         "title": "Uitnodigingen Beheren",

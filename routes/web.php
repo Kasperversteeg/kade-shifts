@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminLeaveController;
+use App\Http\Controllers\AdminTeamController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\Auth\SocialiteController;
@@ -79,6 +80,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/entries/bulk-approve', [ApprovalController::class, 'bulkApprove'])->name('admin.entries.bulk-approve');
         Route::post('/users/{user}/documents', [DocumentController::class, 'store'])->name('admin.documents.store');
         Route::delete('/documents/{document}', [DocumentController::class, 'destroy'])->name('admin.documents.destroy');
+        // Teams
+        Route::get('/teams', [AdminTeamController::class, 'index'])->name('admin.teams');
+        Route::post('/teams', [AdminTeamController::class, 'store'])->name('admin.teams.store');
+        Route::patch('/teams/{team}', [AdminTeamController::class, 'update'])->name('admin.teams.update');
+        Route::delete('/teams/{team}', [AdminTeamController::class, 'destroy'])->name('admin.teams.destroy');
+
         Route::get('/leave-requests', [AdminLeaveController::class, 'index'])->name('admin.leave.index');
         Route::post('/leave-requests/{leaveRequest}/approve', [AdminLeaveController::class, 'approve'])->name('admin.leave.approve');
         Route::post('/leave-requests/{leaveRequest}/reject', [AdminLeaveController::class, 'reject'])->name('admin.leave.reject');

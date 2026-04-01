@@ -133,6 +133,20 @@ export interface Shift {
     planned_hours: number;
 }
 
+export interface TeamMember {
+    id: number;
+    name: string;
+}
+
+export interface Team {
+    id: number;
+    name: string;
+    description: string | null;
+    members: TeamMember[];
+    member_count: number;
+    created_at: string;
+}
+
 export interface ScheduleEmployee {
     id: number;
     name: string;
