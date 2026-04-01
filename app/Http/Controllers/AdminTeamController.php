@@ -47,7 +47,12 @@ class AdminTeamController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:500',
             'member_ids' => 'array',
-            'member_ids.*' => 'exists:users,id',
+            'member_ids.*' => ['exists:users,id', function ($attribute, $value, $fail) {
+                $user = \App\Models\User::find($value);
+                if (!$user || !$user->is_active || $user->hasRole('admin')) {
+                    $fail('Ongeldig teamlid.');
+                }
+            }],
         ]);
 
         $team = Team::create([
@@ -69,7 +74,12 @@ class AdminTeamController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:500',
             'member_ids' => 'array',
-            'member_ids.*' => 'exists:users,id',
+            'member_ids.*' => ['exists:users,id', function ($attribute, $value, $fail) {
+                $user = \App\Models\User::find($value);
+                if (!$user || !$user->is_active || $user->hasRole('admin')) {
+                    $fail('Ongeldig teamlid.');
+                }
+            }],
         ]);
 
         $team->update([

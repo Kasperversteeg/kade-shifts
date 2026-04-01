@@ -175,7 +175,8 @@
         "addMembers": "Add members",
         "noMembers": "No members",
         "deleteConfirm": "Are you sure you want to delete this team?",
-        "createdAt": "Created"
+        "createdAt": "Created",
+        "other": "Other"
     },
     "invitations": {
         "title": "Manage Invitations",
@@ -214,7 +215,8 @@
         "confirmDelete": "Confirm Delete",
         "confirmDeleteMessage": "Are you sure you want to delete this? This action cannot be undone.",
         "delete": "Delete",
-        "saving": "Saving..."
+        "saving": "Saving...",
+        "close": "Close"
     },
     "auth": {
         "login": "Log in",
@@ -310,7 +312,40 @@
         "saving": "Saving...",
         "save": "Save",
         "update": "Update",
-        "allEmployees": "All Employees"
+        "allEmployees": "All Employees",
+        "monthOverview": "Month Overview",
+        "workedHours": "Worked Hours",
+        "leaveDays": "Leave Days",
+        "sickDays": "Sick Days",
+        "logHours": "Log Hours",
+        "noEventsThisMonth": "No events this month.",
+        "eventTypes": {
+            "shift": "Shift",
+            "time_entry": "Hours",
+            "leave": "Leave",
+            "sick": "Sick"
+        }
+    },
+    "shiftPresets": {
+        "title": "Shift Types",
+        "name": "Name",
+        "shortName": "Abbreviation",
+        "times": "Times",
+        "color": "Color",
+        "actions": "Actions",
+        "startTime": "Start Time",
+        "endTime": "End Time",
+        "sortOrder": "Sort Order",
+        "active": "Active",
+        "inactive": "Inactive",
+        "addPreset": "Add Shift Type",
+        "editPreset": "Edit Shift Type",
+        "deleteConfirm": "Are you sure you want to delete this shift type?",
+        "noPresets": "No shift types created yet.",
+        "namePlaceholder": "e.g. Day",
+        "shortNamePlaceholder": "e.g. D",
+        "custom": "Custom",
+        "selectPreset": "Select shift type..."
     },
     "profile": {
         "title": "Profile",

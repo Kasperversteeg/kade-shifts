@@ -20,6 +20,7 @@ class StoreShiftRequest extends FormRequest
             'user_id' => ['nullable', 'exists:users,id'],
             'position' => ['nullable', 'string', 'max:100'],
             'notes' => ['nullable', 'string', 'max:500'],
+            'shift_preset_id' => ['nullable', 'exists:shift_presets,id'],
         ];
     }
 }

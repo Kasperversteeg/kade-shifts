@@ -17,6 +17,7 @@ class Shift extends Model
         'notes',
         'published',
         'created_by',
+        'shift_preset_id',
     ];
 
     protected function casts(): array
@@ -35,6 +36,11 @@ class Shift extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function shiftPreset(): BelongsTo
+    {
+        return $this->belongsTo(ShiftPreset::class);
     }
 
     public function isPublished(): bool

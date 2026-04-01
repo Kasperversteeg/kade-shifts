@@ -2,18 +2,20 @@
 import { ref, watch, computed } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
-import type { Shift, ScheduleEmployee } from '@/types';
+import type { Shift, ScheduleEmployee, ShiftPreset } from '@/types';
 
 interface Props {
     show: boolean;
     shift?: Shift | null;
     employees: ScheduleEmployee[];
+    shiftPresets?: ShiftPreset[];
     defaultDate?: string;
     defaultUserId?: number | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
     shift: null,
+    shiftPresets: () => [],
     defaultDate: undefined,
     defaultUserId: null,
 });
@@ -32,9 +34,34 @@ const form = useForm({
     start_time: '09:00',
     end_time: '17:00',
     user_id: null as number | null | string,
+    shift_preset_id: null as number | null | string,
     position: '',
     notes: '',
 });
+
+const activePresets = computed(() => {
+    return props.shiftPresets.filter(p => p.is_active).sort((a, b) => a.sort_order - b.sort_order);
+});
+
+const selectedPreset = computed(() => {
+    if (!form.shift_preset_id) return null;
+    return props.shiftPresets.find(p => p.id === Number(form.shift_preset_id)) ?? null;
+});
+
+const onPresetChange = (event: Event): void => {
+    const value = (event.target as HTMLSelectElement).value;
+    if (value === '' || value === 'custom') {
+        form.shift_preset_id = null;
+        return;
+    }
+    const presetId = Number(value);
+    form.shift_preset_id = presetId;
+    const preset = props.shiftPresets.find(p => p.id === presetId);
+    if (preset) {
+        form.start_time = preset.start_time;
+        form.end_time = preset.end_time;
+    }
+};
 
 watch(() => props.show, (value) => {
     if (value) {
@@ -43,6 +70,7 @@ watch(() => props.show, (value) => {
             form.start_time = props.shift.start_time;
             form.end_time = props.shift.end_time;
             form.user_id = props.shift.user_id;
+            form.shift_preset_id = props.shift.shift_preset_id;
             form.position = props.shift.position ?? '';
             form.notes = props.shift.notes ?? '';
         } else {
@@ -51,6 +79,7 @@ watch(() => props.show, (value) => {
             form.start_time = '09:00';
             form.end_time = '17:00';
             form.user_id = props.defaultUserId;
+            form.shift_preset_id = null;
             form.position = '';
             form.notes = '';
         }
@@ -64,6 +93,7 @@ const submit = (): void => {
     const data = {
         ...form.data(),
         user_id: form.user_id === '' || form.user_id === null ? null : Number(form.user_id),
+        shift_preset_id: form.shift_preset_id === '' || form.shift_preset_id === null ? null : Number(form.shift_preset_id),
     };
 
     if (isEditing.value && props.shift) {
@@ -95,6 +125,27 @@ const submit = (): void => {
                         required
                     />
                     <p v-if="form.errors.date" class="label text-error">{{ form.errors.date }}</p>
+                </fieldset>
+
+                <fieldset v-if="activePresets.length" class="fieldset">
+                    <legend class="fieldset-legend">{{ t('shiftPresets.title') }}</legend>
+                    <div class="flex items-center gap-2">
+                        <div
+                            v-if="selectedPreset"
+                            class="w-4 h-4 rounded-full border border-base-300 shrink-0"
+                            :style="{ backgroundColor: selectedPreset.color }"
+                        ></div>
+                        <select
+                            :value="form.shift_preset_id ?? 'custom'"
+                            class="select w-full"
+                            @change="onPresetChange"
+                        >
+                            <option value="custom">{{ t('shiftPresets.custom') }}</option>
+                            <option v-for="preset in activePresets" :key="preset.id" :value="preset.id">
+                                {{ preset.name }} ({{ preset.start_time }} - {{ preset.end_time }})
+                            </option>
+                        </select>
+                    </div>
                 </fieldset>
 
                 <div class="grid grid-cols-2 gap-3">

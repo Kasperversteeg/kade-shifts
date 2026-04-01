@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminLeaveController;
+use App\Http\Controllers\AdminShiftPresetController;
 use App\Http\Controllers\AdminTeamController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\ApprovalController;
@@ -85,6 +86,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/teams', [AdminTeamController::class, 'store'])->name('admin.teams.store');
         Route::patch('/teams/{team}', [AdminTeamController::class, 'update'])->name('admin.teams.update');
         Route::delete('/teams/{team}', [AdminTeamController::class, 'destroy'])->name('admin.teams.destroy');
+
+        // Shift Presets
+        Route::get('/shift-presets', [AdminShiftPresetController::class, 'index'])->name('admin.shift-presets');
+        Route::post('/shift-presets', [AdminShiftPresetController::class, 'store'])->name('admin.shift-presets.store');
+        Route::patch('/shift-presets/{shiftPreset}', [AdminShiftPresetController::class, 'update'])->name('admin.shift-presets.update');
+        Route::delete('/shift-presets/{shiftPreset}', [AdminShiftPresetController::class, 'destroy'])->name('admin.shift-presets.destroy');
 
         Route::get('/leave-requests', [AdminLeaveController::class, 'index'])->name('admin.leave.index');
         Route::post('/leave-requests/{leaveRequest}/approve', [AdminLeaveController::class, 'approve'])->name('admin.leave.approve');

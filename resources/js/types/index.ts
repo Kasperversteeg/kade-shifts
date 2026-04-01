@@ -120,6 +120,17 @@ export interface SickLeave {
     created_at: string;
 }
 
+export interface ShiftPreset {
+    id: number;
+    name: string;
+    short_name: string;
+    start_time: string;
+    end_time: string;
+    color: string;
+    sort_order: number;
+    is_active: boolean;
+}
+
 export interface Shift {
     id: number;
     date: string;
@@ -131,6 +142,10 @@ export interface Shift {
     notes: string | null;
     published: boolean;
     planned_hours: number;
+    shift_preset_id: number | null;
+    preset_name: string | null;
+    preset_short_name: string | null;
+    preset_color: string | null;
 }
 
 export interface TeamMember {
@@ -150,6 +165,30 @@ export interface Team {
 export interface ScheduleEmployee {
     id: number;
     name: string;
+}
+
+export interface CalendarEvent {
+    date: string;
+    type: 'shift' | 'time_entry' | 'leave' | 'sick';
+    label: string;
+    detail: string | null;
+    color: string;
+    status: string | null;
+    hours: number | null;
+    id: number;
+    source_type: string;
+    source_id: number;
+    start_time?: string;
+    end_time?: string;
+    position?: string;
+    preset_short_name?: string;
+}
+
+export interface MonthTotals {
+    planned_hours: number;
+    worked_hours: number;
+    leave_days: number;
+    sick_days: number;
 }
 
 export interface PageProps {
