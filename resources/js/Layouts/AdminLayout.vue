@@ -100,7 +100,7 @@ watch(() => page.props.flash, (flash) => {
                 </div>
 
                 <!-- Nav links -->
-                <ul class="menu flex-1 px-2 py-2 gap-0.5 text-neutral-content">
+                <ul class="menu flex-1 py-2 gap-0.5 text-neutral-content [&_li>a]:rounded-none">
                     <li>
                         <Link :href="route('admin.overview')"
                             :class="{ 'active bg-base-content/10': route().current('admin.overview') }">
@@ -172,7 +172,7 @@ watch(() => page.props.flash, (flash) => {
                             <div class="text-sm font-medium truncate">{{ user.name }}</div>
                         </div>
                     </div>
-                    <ul class="menu menu-sm p-0 gap-0.5">
+                    <ul class="menu menu-sm p-0 gap-0.5 [&_li>a]:rounded-none [&_li>button]:rounded-none">
                         <li><Link :href="route('profile.edit')">{{ $t('nav.profile') }}</Link></li>
                         <li><Link :href="route('preferences.edit')">{{ $t('nav.preferences') }}</Link></li>
                         <li><Link :href="route('logout')" method="post" as="button">{{ $t('nav.logOut') }}</Link></li>

@@ -16,7 +16,7 @@ function detectBrowserLocale(): string {
     const browserLang = navigator.language?.split('-')[0];
     return supportedLocales.includes(browserLang as typeof supportedLocales[number])
         ? browserLang
-        : 'en';
+        : 'nl';
 }
 
 // Apply saved theme before render to prevent flash
