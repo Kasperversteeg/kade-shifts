@@ -20,34 +20,39 @@ class ScheduleController extends Controller
         $monthStart = Carbon::parse($month . '-01')->startOfMonth();
         $monthEnd = $monthStart->copy()->endOfMonth();
 
+        // Extend query range to cover the full visible calendar grid
+        // (Monday of the first week through Sunday of the last week)
+        $gridStart = $monthStart->copy()->startOfWeek(Carbon::MONDAY);
+        $gridEnd = $monthEnd->copy()->endOfWeek(Carbon::SUNDAY);
+
         // 1. Published shifts for this user (with preset info)
         $shifts = Shift::with('shiftPreset:id,name,short_name,color')
             ->where('user_id', $user->id)
             ->where('published', true)
-            ->whereBetween('date', [$monthStart, $monthEnd])
+            ->whereBetween('date', [$gridStart, $gridEnd])
             ->orderBy('date')
             ->orderBy('start_time')
             ->get();
 
         // 2. Time entries for this user
         $timeEntries = TimeEntry::where('user_id', $user->id)
-            ->whereBetween('date', [$monthStart, $monthEnd])
+            ->whereBetween('date', [$gridStart, $gridEnd])
             ->orderBy('date')
             ->get();
 
-        // 3. Approved + pending leave requests that overlap with month
+        // 3. Approved + pending leave requests that overlap with visible grid
         $leaveRequests = LeaveRequest::where('user_id', $user->id)
             ->whereIn('status', ['approved', 'pending'])
-            ->where('start_date', '<=', $monthEnd)
-            ->where('end_date', '>=', $monthStart)
+            ->where('start_date', '<=', $gridEnd)
+            ->where('end_date', '>=', $gridStart)
             ->get();
 
-        // 4. Sick leaves that overlap with month
+        // 4. Sick leaves that overlap with visible grid
         $sickLeaves = SickLeave::where('user_id', $user->id)
-            ->where('start_date', '<=', $monthEnd)
-            ->where(function ($q) use ($monthStart) {
+            ->where('start_date', '<=', $gridEnd)
+            ->where(function ($q) use ($gridStart) {
                 $q->whereNull('end_date')
-                    ->orWhere('end_date', '>=', $monthStart);
+                    ->orWhere('end_date', '>=', $gridStart);
             })
             ->get();
 
@@ -92,33 +97,31 @@ class ScheduleController extends Controller
 
         // Leave request events — expand to individual days
         foreach ($leaveRequests as $leave) {
-            $start = $leave->start_date->gt($monthStart) ? $leave->start_date : $monthStart;
-            $end = $leave->end_date->lt($monthEnd) ? $leave->end_date : $monthEnd;
+            $start = $leave->start_date->gt($gridStart) ? $leave->start_date : $gridStart;
+            $end = $leave->end_date->lt($gridEnd) ? $leave->end_date : $gridEnd;
 
             for ($d = Carbon::parse($start); $d->lte($end); $d->addDay()) {
-                if ($d->isWeekday()) {
-                    $events->push([
-                        'date' => $d->format('Y-m-d'),
-                        'type' => 'leave',
-                        'label' => $leave->type,
-                        'detail' => null,
-                        'color' => '#F59E0B',
-                        'status' => $leave->status,
-                        'hours' => null,
-                        'id' => $leave->id,
-                        'source_type' => 'leave_request',
-                        'source_id' => $leave->id,
-                    ]);
-                }
+                $events->push([
+                    'date' => $d->format('Y-m-d'),
+                    'type' => 'leave',
+                    'label' => $leave->type,
+                    'detail' => null,
+                    'color' => '#F59E0B',
+                    'status' => $leave->status,
+                    'hours' => null,
+                    'id' => $leave->id,
+                    'source_type' => 'leave_request',
+                    'source_id' => $leave->id,
+                ]);
             }
         }
 
         // Sick leave events — expand to individual days
         foreach ($sickLeaves as $sick) {
-            $start = $sick->start_date->gt($monthStart) ? $sick->start_date : $monthStart;
+            $start = $sick->start_date->gt($gridStart) ? $sick->start_date : $gridStart;
             $end = $sick->end_date
-                ? ($sick->end_date->lt($monthEnd) ? $sick->end_date : $monthEnd)
-                : $monthEnd;
+                ? ($sick->end_date->lt($gridEnd) ? $sick->end_date : $gridEnd)
+                : $gridEnd;
 
             for ($d = Carbon::parse($start); $d->lte($end); $d->addDay()) {
                 $events->push([
@@ -136,12 +139,14 @@ class ScheduleController extends Controller
             }
         }
 
-        // Month totals
+        // Month totals (scoped to the actual month, not the full grid)
+        $monthStartStr = $monthStart->format('Y-m-d');
+        $monthEndStr = $monthEnd->format('Y-m-d');
         $totals = [
-            'planned_hours' => $shifts->sum('planned_hours'),
-            'worked_hours' => $timeEntries->sum('total_hours'),
-            'leave_days' => $events->where('type', 'leave')->count(),
-            'sick_days' => $events->where('type', 'sick')->count(),
+            'planned_hours' => $shifts->filter(fn ($s) => $s->date->between($monthStart, $monthEnd))->sum('planned_hours'),
+            'worked_hours' => $timeEntries->filter(fn ($e) => $e->date->between($monthStart, $monthEnd))->sum('total_hours'),
+            'leave_days' => $events->where('type', 'leave')->filter(fn ($e) => $e['date'] >= $monthStartStr && $e['date'] <= $monthEndStr)->count(),
+            'sick_days' => $events->where('type', 'sick')->filter(fn ($e) => $e['date'] >= $monthStartStr && $e['date'] <= $monthEndStr)->count(),
         ];
 
         return Inertia::render('Schedule/Index', [

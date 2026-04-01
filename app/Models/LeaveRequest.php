@@ -56,15 +56,6 @@ class LeaveRequest extends Model
 
     public function getDaysAttribute(): int
     {
-        $days = 0;
-        $period = CarbonPeriod::create($this->start_date, $this->end_date);
-
-        foreach ($period as $date) {
-            if ($date->isWeekday()) {
-                $days++;
-            }
-        }
-
-        return $days;
+        return CarbonPeriod::create($this->start_date, $this->end_date)->count();
     }
 }
