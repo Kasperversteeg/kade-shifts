@@ -20,7 +20,7 @@ class UserInvitation extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'You\'re invited to join Hour Registration',
+            subject: 'Je bent uitgenodigd voor Kade Shifts',
         );
     }
 

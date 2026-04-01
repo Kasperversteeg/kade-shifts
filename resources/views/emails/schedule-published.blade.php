@@ -1,20 +1,20 @@
 <x-mail::message>
-# Hello {{ $user->name }},
+# Hallo {{ $user->name }},
 
-Your schedule for the week of **{{ $weekStart }}** has been published.
+Je rooster voor de week van **{{ $weekStart }}** is gepubliceerd.
 
 <x-mail::table>
-| Date | Start | End | Position |
-|:-----|:------|:----|:---------|
+| Datum | Start | Einde | Positie |
+|:------|:------|:------|:--------|
 @foreach ($shifts as $shift)
 | {{ $shift->date->format('D d M') }} | {{ $shift->start_time }} | {{ $shift->end_time }} | {{ $shift->position ?? '—' }} |
 @endforeach
 </x-mail::table>
 
 <x-mail::button :url="route('schedule.index')">
-View Schedule
+Bekijk Rooster
 </x-mail::button>
 
-Thanks,<br>
+Met vriendelijke groet,<br>
 {{ config('app.name') }}
 </x-mail::message>

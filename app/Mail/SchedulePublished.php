@@ -24,7 +24,7 @@ class SchedulePublished extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: "Your schedule for week of {$this->weekStart}",
+            subject: "Je rooster voor de week van {$this->weekStart}",
         );
     }
 
