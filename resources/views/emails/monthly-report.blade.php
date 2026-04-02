@@ -1,17 +1,17 @@
 <x-mail::message>
-# Monthly Hours Report - {{ $month }}
+# Maandelijks Urenrapport - {{ $month }}
 
-Here's the summary of hours worked this month:
+Hieronder het overzicht van de gewerkte uren deze maand:
 
 <x-mail::table>
-| Name | Email | Hours | Entries |
-|:-----|:------|------:|--------:|
+| Naam | E-mail | Uren | Registraties |
+|:-----|:-------|-----:|-------------:|
 @foreach($users as $user)
 | {{ $user['name'] }} | {{ $user['email'] }} | {{ number_format($user['total_hours'], 2) }} | {{ $user['entries_count'] }} |
 @endforeach
-| **Total** | | **{{ number_format($grandTotal, 2) }}** | |
+| **Totaal** | | **{{ number_format($grandTotal, 2) }}** | |
 </x-mail::table>
 
-Thanks,<br>
+Met vriendelijke groet,<br>
 {{ config('app.name') }}
 </x-mail::message>

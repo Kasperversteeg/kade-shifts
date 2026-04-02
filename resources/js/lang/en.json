@@ -17,7 +17,8 @@
         "leaveRequests": "Leave Requests",
         "invitations": "Invitations",
         "employeeView": "Employee View",
-        "teams": "Teams"
+        "teams": "Teams",
+        "approvals": "Approvals"
     },
     "dashboard": {
         "title": "Dashboard",
@@ -160,7 +161,16 @@
         "personalInfo": "Personal Information",
         "shifts": "Shifts",
         "approvedHours": "Approved Hours",
-        "viewShifts": "View Shifts"
+        "viewShifts": "View Shifts",
+        "approvals": "Approvals",
+        "approveAll": "Approve All",
+        "approveSelected": "Approve Selected",
+        "noPendingApprovals": "No pending approvals.",
+        "selectAll": "Select all",
+        "entry": "entry",
+        "shift": "Shift",
+        "hours": "Hours",
+        "notesColumn": "Notes"
     },
     "teams": {
         "title": "Teams",

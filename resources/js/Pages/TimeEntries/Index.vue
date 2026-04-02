@@ -6,9 +6,9 @@ import EditTimeEntryModal from '@/Components/EditTimeEntryModal.vue';
 import MonthNavigator from '@/Components/MonthNavigator.vue';
 import HoursSummary from '@/Components/HoursSummary.vue';
 import WeeklySummary from '@/Components/WeeklySummary.vue';
-import { Head, router } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import type { TimeEntry, StatusCounts, WeeklyTotal } from '@/types';
 
 const { t } = useI18n();
@@ -25,16 +25,6 @@ const props = defineProps<Props>();
 
 const showForm = ref<boolean>(false);
 const editingEntry = ref<TimeEntry | null>(null);
-
-const hasSubmittableEntries = computed<boolean>(() => {
-    return (props.statusCounts.draft + props.statusCounts.rejected) > 0;
-});
-
-const submitAll = (): void => {
-    router.post(route('time-entries.submit-month'), {
-        month: props.currentMonth,
-    });
-};
 </script>
 
 <template>
@@ -51,9 +41,6 @@ const submitAll = (): void => {
 
             <!-- Status Summary -->
             <div v-if="entries.length > 0" class="flex flex-wrap gap-2">
-                <span v-if="statusCounts.draft" class="badge badge-ghost gap-1">
-                    {{ statusCounts.draft }} {{ t('status.draft') }}
-                </span>
                 <span v-if="statusCounts.submitted" class="badge badge-warning gap-1">
                     {{ statusCounts.submitted }} {{ t('status.submitted') }}
                 </span>
@@ -74,9 +61,6 @@ const submitAll = (): void => {
                                 class="btn btn-outline btn-sm">
                                 {{ t('export.csv') }}
                             </a>
-                            <button v-if="hasSubmittableEntries" @click="submitAll" class="btn btn-success btn-sm">
-                                {{ t('timeEntries.submitAll') }}
-                            </button>
                             <button @click="showForm = !showForm" class="btn btn-primary btn-sm">
                                 {{ showForm ? t('common.cancel') : t('timeEntries.addEntry') }}
                             </button>

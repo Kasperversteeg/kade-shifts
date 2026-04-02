@@ -1,14 +1,14 @@
 <x-mail::message>
-# You're Invited!
+# Je bent uitgenodigd!
 
-You've been invited to join the Hour Registration app.
+Je bent uitgenodigd om deel te nemen aan de urenregistratie van Kade Shifts.
 
 <x-mail::button :url="$url">
-Accept Invitation
+Uitnodiging Accepteren
 </x-mail::button>
 
-This invitation will expire on {{ $expiresAt->format('F j, Y') }}.
+Deze uitnodiging is geldig tot {{ $expiresAt->format('j F Y') }}.
 
-Thanks,<br>
+Met vriendelijke groet,<br>
 {{ config('app.name') }}
 </x-mail::message>

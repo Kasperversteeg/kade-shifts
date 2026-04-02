@@ -1,14 +1,14 @@
 <x-mail::message>
-# Contract Expiring Soon
+# Contract Loopt Binnenkort Af
 
-The contract for **{{ $employeeName }}** is expiring on **{{ $endDate }}** ({{ $daysRemaining }} days remaining).
+Het contract van **{{ $employeeName }}** loopt af op **{{ $endDate }}** (nog {{ $daysRemaining }} dagen).
 
-Please review the employee's contract and take the necessary action.
+Bekijk het contract van de medewerker en onderneem de benodigde actie.
 
 <x-mail::button :url="$url">
-View Employee Profile
+Bekijk Medewerker
 </x-mail::button>
 
-Thanks,<br>
+Met vriendelijke groet,<br>
 {{ config('app.name') }}
 </x-mail::message>

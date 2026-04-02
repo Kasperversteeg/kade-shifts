@@ -111,6 +111,15 @@ watch(() => page.props.flash, (flash) => {
                         </Link>
                     </li>
                     <li>
+                        <Link :href="route('admin.approvals')"
+                            :class="{ 'active bg-base-content/10': route().current('admin.approvals') }">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            {{ $t('adminNav.approvals') }}
+                        </Link>
+                    </li>
+                    <li>
                         <Link :href="route('admin.users')"
                             :class="{ 'active bg-base-content/10': route().current('admin.users') || route().current('admin.user-detail') || route().current('admin.user-edit') || route().current('admin.user-shifts') }">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

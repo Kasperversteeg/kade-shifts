@@ -19,7 +19,7 @@ class MonthlyHoursReport extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: "Monthly Hours Report - {$this->month}",
+            subject: "Maandelijks Urenrapport - {$this->month}",
         );
     }
 

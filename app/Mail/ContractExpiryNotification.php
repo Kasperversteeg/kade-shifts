@@ -20,7 +20,7 @@ class ContractExpiryNotification extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: "Contract {$this->employee->name} expiring soon",
+            subject: "Contract {$this->employee->name} loopt binnenkort af",
         );
     }
 
