@@ -92,6 +92,8 @@ const submit = (): void => {
         </form>
 
         <div class="mt-6">
+            <!-- Google OAuth hidden until properly configured -->
+            <!--
             <div class="relative">
                 <div class="absolute inset-0 flex items-center">
                     <div class="w-full border-t border-base-300"></div>
@@ -110,6 +112,7 @@ const submit = (): void => {
                 </svg>
                 {{ t('auth.loginWithGoogle') }}
             </a>
+            -->
         </div>
     </GuestLayout>
 </template>
