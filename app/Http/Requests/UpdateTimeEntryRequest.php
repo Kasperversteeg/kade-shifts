@@ -20,6 +20,7 @@ class UpdateTimeEntryRequest extends FormRequest
                 'date',
                 Rule::unique('time_entries')
                     ->where('user_id', $this->user()->id)
+                    ->whereNull('deleted_at')
                     ->ignore($this->route('time_entry')),
             ],
             'shift_start' => 'required|date_format:H:i',
@@ -32,7 +33,7 @@ class UpdateTimeEntryRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'date.unique' => 'You already have an entry for this date.',
+            'date.unique' => __('You already have an entry for this date.'),
         ];
     }
 }

@@ -18,7 +18,7 @@ class StoreTimeEntryRequest extends FormRequest
             'date' => [
                 'required',
                 'date',
-                Rule::unique('time_entries')->where('user_id', $this->user()->id),
+                Rule::unique('time_entries')->where('user_id', $this->user()->id)->whereNull('deleted_at'),
             ],
             'shift_start' => 'required|date_format:H:i',
             'shift_end' => 'required|date_format:H:i',
@@ -30,7 +30,7 @@ class StoreTimeEntryRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'date.unique' => 'You already have an entry for this date.',
+            'date.unique' => __('You already have an entry for this date.'),
         ];
     }
 }
