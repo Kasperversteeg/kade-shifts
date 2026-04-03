@@ -21,6 +21,7 @@ class UpdateUserProfileRequest extends FormRequest
             'birth_date' => 'nullable|date|before:today',
             'start_date' => 'nullable|date',
             'bsn' => 'nullable|string|size:9',
+            'bank_account_number' => 'nullable|string|max:34',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:255',
             'city' => 'nullable|string|max:255',

@@ -125,6 +125,7 @@
         "birthDate": "Date of Birth",
         "startDate": "Start Date",
         "bsn": "BSN",
+        "bankAccountNumber": "Bank Account Number (IBAN)",
         "phone": "Phone Number",
         "address": "Address",
         "city": "City",

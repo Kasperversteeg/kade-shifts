@@ -35,6 +35,7 @@ class User extends Authenticatable
         'birth_date',
         'start_date',
         'bsn',
+        'bank_account_number',
         'phone',
         'address',
         'city',
@@ -55,6 +56,7 @@ class User extends Authenticatable
         'password',
         'remember_token',
         'bsn',
+        'bank_account_number',
     ];
 
     /**
@@ -74,6 +76,7 @@ class User extends Authenticatable
             'birth_date' => 'date',
             'start_date' => 'date',
             'bsn' => 'encrypted',
+            'bank_account_number' => 'encrypted',
             'contract_expiry_notified_at' => 'datetime',
             'statutory_leave_days' => 'integer',
             'extra_leave_days' => 'integer',
