@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmDialog from '@/Components/ConfirmDialog.vue';
-import { Head, router, useForm } from '@inertiajs/vue3';
+import { Head, router, useForm, usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import type { LeaveRequest, LeaveBalance } from '@/types';
 
 interface Props {
@@ -13,6 +13,8 @@ interface Props {
 
 const props = defineProps<Props>();
 const { t } = useI18n();
+const page = usePage();
+const showLeaveBalance = computed(() => (page.props.auth as any).user?.contract_type === 'vast');
 
 const showForm = ref<boolean>(false);
 const cancellingRequest = ref<LeaveRequest | null>(null);
@@ -67,8 +69,8 @@ const leaveTypes = ['vakantie', 'bijzonder_verlof', 'onbetaald_verlof'] as const
                 </button>
             </div>
 
-            <!-- Leave Balance Stats -->
-            <div class="stats shadow w-full">
+            <!-- Leave Balance Stats (only for "vast" contract type) -->
+            <div v-if="showLeaveBalance" class="stats shadow w-full">
                 <div class="stat">
                     <div class="stat-title">{{ t('leave.balance.total') }}</div>
                     <div class="stat-value text-primary">{{ leaveBalance.total }}</div>
