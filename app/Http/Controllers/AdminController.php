@@ -154,7 +154,7 @@ class AdminController extends Controller
 
         Mail::to(auth()->user()->email)->queue(new MonthlyHoursReport($users, $month));
 
-        return redirect()->back()->with('success', 'Monthly report sent successfully!');
+        return redirect()->back()->with('success', __('Monthly report sent successfully!'));
     }
 
     public function exportCsv(Request $request)

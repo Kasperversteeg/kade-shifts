@@ -39,7 +39,7 @@ class InvitationController extends Controller
 
         Mail::to($invitation->email)->send(new UserInvitation($invitation));
 
-        return redirect()->back()->with('success', 'Invitation sent successfully!');
+        return redirect()->back()->with('success', __('Invitation sent successfully!'));
     }
 
     public function accept($token)
@@ -51,7 +51,7 @@ class InvitationController extends Controller
         }
 
         if ($invitation->isAccepted()) {
-            return redirect()->route('login')->with('info', 'This invitation has already been accepted.');
+            return redirect()->route('login')->with('info', __('This invitation has already been accepted.'));
         }
 
         return Inertia::render('Auth/AcceptInvitation', [
@@ -85,6 +85,6 @@ class InvitationController extends Controller
 
         auth()->login($user);
 
-        return redirect()->route('dashboard')->with('success', 'Welcome! Your account has been created.');
+        return redirect()->route('dashboard')->with('success', __('Welcome! Your account has been created.'));
     }
 }
