@@ -95,9 +95,9 @@ class AdminUserController extends Controller
             'deactivated_at' => $user->is_active ? now() : null,
         ]);
 
-        $status = $user->is_active ? 'activated' : 'deactivated';
+        $message = $user->is_active ? __('User activated successfully.') : __('User deactivated successfully.');
 
-        return redirect()->back()->with('success', "User {$status} successfully.");
+        return redirect()->back()->with('success', $message);
     }
 
     public function update(UpdateUserProfileRequest $request, User $user)

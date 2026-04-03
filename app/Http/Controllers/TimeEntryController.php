@@ -140,6 +140,6 @@ class TimeEntryController extends Controller
 
         $timeEntry->delete();
 
-        return redirect()->back()->with('success', 'Time entry deleted successfully!');
+        return redirect()->back()->with('success', __('Time entry deleted successfully!'));
     }
 }

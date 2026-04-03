@@ -205,9 +205,12 @@ const submitRecovery = (sickLeaveId: number): void => {
                                     class="input w-full"
                                 />
                             </fieldset>
-                            <button type="submit" class="btn btn-error btn-sm" :disabled="sickLeaveForm.processing">
-                                {{ t('sickLeave.register') }}
-                            </button>
+                            <fieldset class="fieldset">
+                                <legend class="fieldset-legend">&nbsp;</legend>
+                                <button type="submit" class="btn btn-error" :disabled="sickLeaveForm.processing">
+                                    {{ t('sickLeave.register') }}
+                                </button>
+                            </fieldset>
                         </form>
                     </div>
 

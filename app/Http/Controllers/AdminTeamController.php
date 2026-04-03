@@ -50,7 +50,7 @@ class AdminTeamController extends Controller
             'member_ids.*' => ['exists:users,id', function ($attribute, $value, $fail) {
                 $user = \App\Models\User::find($value);
                 if (!$user || !$user->is_active || $user->hasRole('admin')) {
-                    $fail('Ongeldig teamlid.');
+                    $fail(__('Invalid team member.'));
                 }
             }],
         ]);
@@ -65,7 +65,7 @@ class AdminTeamController extends Controller
             $team->members()->attach($validated['member_ids']);
         }
 
-        return redirect()->back()->with('success', __('Team aangemaakt.'));
+        return redirect()->back()->with('success', __('Team created.'));
     }
 
     public function update(Request $request, Team $team)
@@ -77,7 +77,7 @@ class AdminTeamController extends Controller
             'member_ids.*' => ['exists:users,id', function ($attribute, $value, $fail) {
                 $user = \App\Models\User::find($value);
                 if (!$user || !$user->is_active || $user->hasRole('admin')) {
-                    $fail('Ongeldig teamlid.');
+                    $fail(__('Invalid team member.'));
                 }
             }],
         ]);
@@ -89,13 +89,13 @@ class AdminTeamController extends Controller
 
         $team->members()->sync($validated['member_ids'] ?? []);
 
-        return redirect()->back()->with('success', __('Team bijgewerkt.'));
+        return redirect()->back()->with('success', __('Team updated.'));
     }
 
     public function destroy(Team $team)
     {
         $team->delete();
 
-        return redirect()->back()->with('success', __('Team verwijderd.'));
+        return redirect()->back()->with('success', __('Team deleted.'));
     }
 }

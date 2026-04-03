@@ -40,6 +40,11 @@
     color: #fff;
 }
 
+.badge-ghost,
+.badge-outline {
+    color: var(--color-base-content);
+}
+
 .badge-sm {
     padding-inline: 0.625rem;
 }

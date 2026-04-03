@@ -45,7 +45,7 @@ class AdminShiftPresetController extends Controller
             'created_by' => auth()->id(),
         ]);
 
-        return redirect()->back()->with('success', __('Dienstpreset aangemaakt.'));
+        return redirect()->back()->with('success', __('Shift preset created.'));
     }
 
     public function update(Request $request, ShiftPreset $shiftPreset)
@@ -62,13 +62,13 @@ class AdminShiftPresetController extends Controller
 
         $shiftPreset->update($validated);
 
-        return redirect()->back()->with('success', __('Dienstpreset bijgewerkt.'));
+        return redirect()->back()->with('success', __('Shift preset updated.'));
     }
 
     public function destroy(ShiftPreset $shiftPreset)
     {
         $shiftPreset->delete();
 
-        return redirect()->back()->with('success', __('Dienstpreset verwijderd.'));
+        return redirect()->back()->with('success', __('Shift preset deleted.'));
     }
 }

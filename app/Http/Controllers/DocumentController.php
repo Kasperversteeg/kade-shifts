@@ -28,7 +28,7 @@ class DocumentController extends Controller
             'uploaded_by' => auth()->id(),
         ]);
 
-        return redirect()->back()->with('success', 'Document uploaded successfully.');
+        return redirect()->back()->with('success', __('Document uploaded successfully.'));
     }
 
     public function storeOwn(Request $request)
@@ -51,7 +51,7 @@ class DocumentController extends Controller
             'uploaded_by' => $user->id,
         ]);
 
-        return redirect()->back()->with('success', 'Document uploaded successfully.');
+        return redirect()->back()->with('success', __('Document uploaded successfully.'));
     }
 
     public function download(Document $document)
@@ -69,6 +69,6 @@ class DocumentController extends Controller
     {
         $document->delete();
 
-        return redirect()->back()->with('success', 'Document deleted successfully.');
+        return redirect()->back()->with('success', __('Document deleted successfully.'));
     }
 }

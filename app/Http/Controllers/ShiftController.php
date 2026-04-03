@@ -114,21 +114,21 @@ class ShiftController extends Controller
             'created_by' => auth()->id(),
         ]);
 
-        return back()->with('success', 'Shift created.');
+        return back()->with('success', __('Shift created.'));
     }
 
     public function update(UpdateShiftRequest $request, Shift $shift)
     {
         $shift->update($request->validated());
 
-        return back()->with('success', 'Shift updated.');
+        return back()->with('success', __('Shift updated.'));
     }
 
     public function destroy(Shift $shift)
     {
         $shift->delete();
 
-        return back()->with('success', 'Shift deleted.');
+        return back()->with('success', __('Shift deleted.'));
     }
 
     public function move(Request $request, Shift $shift)
@@ -140,7 +140,7 @@ class ShiftController extends Controller
 
         $shift->update($validated);
 
-        return back()->with('success', 'Shift moved.');
+        return back()->with('success', __('Shift moved.'));
     }
 
     public function publish(Request $request)
@@ -168,6 +168,6 @@ class ShiftController extends Controller
             }
         }
 
-        return back()->with('success', 'Schedule published.');
+        return back()->with('success', __('Schedule published.'));
     }
 }
