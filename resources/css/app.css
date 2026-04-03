@@ -37,6 +37,10 @@
 
 .badge {
     padding-inline: 0.75rem;
+}
+
+.badge:not(.badge-success, .badge-error, .badge-warning, .badge-info, .badge-primary, .badge-secondary, .badge-accent, .badge-neutral, .badge-ghost, .badge-outline) {
+    background-color: var(--color-k-orange);
     color: #fff;
 }
 
