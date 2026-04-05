@@ -83,6 +83,7 @@ class AdminUserController extends Controller
         return Inertia::render('Admin/UserEdit', [
             'user' => array_merge($user->toArray(), [
                 'bsn' => $user->bsn ? str_repeat('*', 5) . substr($user->bsn, -4) : null,
+                'bank_account_number' => $user->bank_account_number,
                 'profile_completeness' => $user->profileCompleteness,
             ]),
         ]);

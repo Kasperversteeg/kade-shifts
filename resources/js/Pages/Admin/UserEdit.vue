@@ -19,6 +19,7 @@ interface UserProfile {
     birth_date: string | null;
     start_date: string | null;
     bsn: string | null;
+    bank_account_number: string | null;
     phone: string | null;
     address: string | null;
     city: string | null;
@@ -41,6 +42,7 @@ const form = useForm({
     birth_date: props.user.birth_date ?? '',
     start_date: props.user.start_date ?? '',
     bsn: props.user.bsn ?? '',
+    bank_account_number: props.user.bank_account_number ?? '',
     phone: props.user.phone ?? '',
     address: props.user.address ?? '',
     city: props.user.city ?? '',
@@ -174,6 +176,21 @@ const submit = (): void => {
                                     />
                                     <p v-if="form.errors.start_date" class="label text-error">
                                         {{ form.errors.start_date }}
+                                    </p>
+                                </fieldset>
+
+                                <fieldset class="fieldset">
+                                    <legend class="fieldset-legend">{{ t('admin.bankAccountNumber') }}</legend>
+                                    <input
+                                        type="text"
+                                        v-model="form.bank_account_number"
+                                        class="input w-full"
+                                        :class="{ 'input-error': form.errors.bank_account_number }"
+                                        maxlength="34"
+                                        placeholder="NL00BANK0000000000"
+                                    />
+                                    <p v-if="form.errors.bank_account_number" class="label text-error">
+                                        {{ form.errors.bank_account_number }}
                                     </p>
                                 </fieldset>
                             </div>

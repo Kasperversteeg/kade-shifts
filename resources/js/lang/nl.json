@@ -125,6 +125,7 @@
         "birthDate": "Geboortedatum",
         "startDate": "Datum in Dienst",
         "bsn": "BSN",
+        "bankAccountNumber": "Bankrekeningnummer (IBAN)",
         "phone": "Telefoonnummer",
         "address": "Adres",
         "city": "Woonplaats",
